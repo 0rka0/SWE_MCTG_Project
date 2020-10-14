@@ -8,12 +8,7 @@ namespace MTCG_Project
     {
         static void Main(string[] args)
         {
-            ICard card1 = new Dragon();
-
-            Console.WriteLine(card1.name);
-            Console.WriteLine(card1.damage);
-            Console.WriteLine(card1.element_type);
-            Console.WriteLine(card1.type);
+            Console.WriteLine("Hello World!");
         }
     }
 }
