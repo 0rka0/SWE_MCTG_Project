@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MTCG_Project.MTCG.Cards.Monster
+namespace MTCG_Project.MTCG.Cards.Monsters
 {
-    public class Dragon : AbstractMonstercard
+    public class Ork : AbstractMonstercard
     {
-        public Dragon() : base(Cardname.Dragon){}
+        public Ork() : base(Cardname.Ork) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {
-            if(otherCard.name == Cardname.FireElf)
+            if (otherCard.name == Cardname.Wizard)
             {
                 return true;
             }

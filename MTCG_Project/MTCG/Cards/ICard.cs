@@ -13,6 +13,9 @@ namespace MTCG_Project.MTCG
         Knight,
         Kraken,
         FireElf,
+        FireSpell,
+        WaterSpell,
+        NormalSpell,
     }
 
     public enum Element_type
