@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTCG_Project", "MTCG_Project.csproj", "{AF226CC1-6708-48CC-B4DB-4B57FD8C4B62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTG_Project.Test", "..\MCTG_Project.Test\MCTG_Project.Test.csproj", "{99CBB43E-9C9E-4A32-B307-164786C183A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTCG_Project.Test", "..\MCTG_Project.Test\MTCG_Project.Test.csproj", "{99CBB43E-9C9E-4A32-B307-164786C183A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

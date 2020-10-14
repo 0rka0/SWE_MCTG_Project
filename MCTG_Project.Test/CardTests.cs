@@ -2,8 +2,10 @@ using NUnit.Framework;
 using System.IO;
 using System;
 using MTCG_Project.MTCG;
-using MTCG_Project.MTCG.Cards.Monster;
+using MTCG_Project.MTCG.Cards;
 using MTCG_Project.MTCG.Cards.Monsters;
+using MTCG_Project.MTCG.Cards.Spells;
+
 
 namespace MCTG_Project.Test
 {
@@ -34,7 +36,8 @@ namespace MCTG_Project.Test
             Assert.AreEqual(desiredType, card1.type);
         }
 
-        public void createAll()
+        [Test]
+        public void createAllMonstercards()
         {
             ICard card1 = new Dragon();
             ICard card2 = new FireElf();
@@ -59,6 +62,38 @@ namespace MCTG_Project.Test
             Assert.AreEqual(desiredName5, card5.name);
             Assert.AreEqual(desiredName6, card6.name);
             Assert.AreEqual(desiredName7, card7.name);
+        }
+
+        [Test]
+        public void createAllSpellcards()
+        {
+            ICard card1 = new FireSpell();
+            ICard card2 = new NormalSpell();
+            ICard card3 = new WaterSpell();
+
+            Cardname desiredName1 = Cardname.FireSpell;
+            Cardname desiredName2 = Cardname.NormalSpell;
+            Cardname desiredName3 = Cardname.WaterSpell;
+
+            Assert.AreEqual(desiredName1, card1.name);
+            Assert.AreEqual(desiredName2, card2.name);
+            Assert.AreEqual(desiredName3, card3.name);
+        }
+
+        [Test]
+        public void Dragon_Goblin()
+        {
+            ICard Dragon = new Dragon();
+            ICard Goblin = new Goblin();
+
+            int desiredDragonDamage = 100;
+            int desiredGoblinDamage = 0;
+
+            int actualDragonDamage = Dragon.CombatBehavior(Goblin);
+            int actualGoblinDamage = Goblin.CombatBehavior(Dragon);
+
+            Assert.AreEqual(desiredDragonDamage, actualDragonDamage);
+            Assert.AreEqual(desiredGoblinDamage, actualGoblinDamage);
         }
     }
 }

@@ -65,9 +65,57 @@ namespace MTCG_Project.MTCG.Cards
                 return 0;
             }
 
+            if(otherCard.type == "Spell")
+            {
+                if (ElementalWeakness(otherCard))
+                {
+                    return damage / 2;
+                }
+                if (ElementalAdvantage(otherCard))
+                {
+                    return damage * 2;
+                }
+            }
+
             return damage;
         }
 
         public abstract bool SpecialBehavior(ICard otherCard);
+
+        bool ElementalWeakness(ICard other)
+        {
+            if (this.element_type == Element_type.Fire && other.element_type == Element_type.Water)
+            {
+                return true;
+            }
+            if (this.element_type == Element_type.Normal && other.element_type == Element_type.Fire)
+            {
+                return true;
+            }
+            if (this.element_type == Element_type.Water && other.element_type == Element_type.Normal)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        bool ElementalAdvantage(ICard other)
+        {
+            if (this.element_type == Element_type.Fire && other.element_type == Element_type.Normal)
+            {
+                return true;
+            }
+            if (this.element_type == Element_type.Normal && other.element_type == Element_type.Water)
+            {
+                return true;
+            }
+            if (this.element_type == Element_type.Water && other.element_type == Element_type.Fire)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

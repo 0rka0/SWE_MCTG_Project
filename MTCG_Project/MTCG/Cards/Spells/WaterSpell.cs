@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MTCG_Project.MTCG.Cards.Monsters
+namespace MTCG_Project.MTCG.Cards.Spells
 {
-    public class Dragon : AbstractMonstercard
+    public class WaterSpell : AbstractSpellcard
     {
-        public Dragon() : base(Cardname.Dragon) { }
+        public WaterSpell() : base(Cardname.WaterSpell) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {
-            if (otherCard.name == Cardname.FireElf)
+            if (otherCard.name == Cardname.Kraken)
             {
                 return true;
             }

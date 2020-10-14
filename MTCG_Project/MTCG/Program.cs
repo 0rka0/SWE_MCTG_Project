@@ -1,5 +1,5 @@
 ﻿using MTCG_Project.MTCG;
-using MTCG_Project.MTCG.Cards.Monster;
+using MTCG_Project.MTCG.Cards.Monsters;
 using System;
 
 namespace MTCG_Project
