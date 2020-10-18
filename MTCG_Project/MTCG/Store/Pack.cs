@@ -6,7 +6,7 @@ using MTCG_Project.MTCG.Cards;
 using MTCG_Project.MTCG.Cards.Monsters;
 using MTCG_Project.MTCG.Cards.Spells;
 
-namespace MTCG_Project.MTCG.Store
+namespace MTCG_Project.MTCG.NamespaceStore
 {
     public class Pack
     {

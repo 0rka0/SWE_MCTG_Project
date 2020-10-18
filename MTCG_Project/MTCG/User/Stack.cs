@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
+using MTCG_Project.MTCG.Cards;
 
-namespace MTCG_Project.MTCG.User
+namespace MTCG_Project.MTCG.NamespaceUser
 {
     public class Stack
     {
         public List<ICard> cards { get; } = new List<ICard>();
-        public int cards_amount;
+        int cards_amount;
 
         public Stack()
         {
@@ -34,6 +35,10 @@ namespace MTCG_Project.MTCG.User
             {
                 counter++;
                 Console.WriteLine(counter + " " + card.name + " " + card.damage);
+            }
+            if (counter == 0)
+            {
+                Console.WriteLine("The Stack is still empty.");
             }
             Console.WriteLine();
         }

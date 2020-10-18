@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MTCG_Project.MTCG
+namespace MTCG_Project.MTCG.Cards
 {
     public enum Cardname
     {
