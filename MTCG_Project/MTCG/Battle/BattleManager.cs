@@ -12,13 +12,26 @@ namespace MTCG_Project.MTCG.Battle
         User user1;
         User user2;
         string log;
+        bool userTurn;
         public BattleManager(User curUser)
         {
             user1 = curUser;
             user2 = FindOpponent();
+        }
 
-            user1.deck.ListCards();
-            user2.deck.ListCards();
+        public void Start()
+        {
+            userTurn = DetStartingUser();
+
+            
+            if(userTurn)
+            {
+                userTurn = false;
+            }
+            else
+            {
+                userTurn = true;
+            }
         }
 
         User FindOpponent()
@@ -26,6 +39,16 @@ namespace MTCG_Project.MTCG.Battle
             User tmp_user = new User("Test");
             tmp_user.GenerateDummy();
             return tmp_user;
+        }
+
+        bool DetStartingUser()
+        {
+            Random rd = new Random();
+            if(rd.Next(0,2) == 1)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace MTCG_Project.MTCG.NamespaceUser
 {
     public class Stack
     {
-        public List<ICard> cards { get; } = new List<ICard>();
+        public List<ICard> cards = new List<ICard>();
         int cards_amount;
 
         public Stack()
@@ -38,7 +38,7 @@ namespace MTCG_Project.MTCG.NamespaceUser
             }
             if (counter == 0)
             {
-                Console.WriteLine("The Stack is still empty.");
+                Console.WriteLine("The stack is still empty.");
             }
             Console.WriteLine();
         }

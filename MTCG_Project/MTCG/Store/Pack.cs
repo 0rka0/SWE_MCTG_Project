@@ -23,7 +23,7 @@ namespace MTCG_Project.MTCG.NamespaceStore
             Random rd = new Random();
             for (int i = 0; i < 5; i++)
             {
-                int rand_num = rd.Next(1, 10);
+                int rand_num = rd.Next(1, 11);
 
                 if (rand_num == 1)
                 {

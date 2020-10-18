@@ -7,42 +7,35 @@ using MTCG_Project.MTCG.Cards;
 
 namespace MTCG_Project.MTCG.NamespaceUser
 {
-   public class Deck
+    public class Deck
     {
-        ICard[] cards;
-        bool deckSet;
-
-        public Deck()
-        {
-            cards = new ICard[4];
-            deckSet = false;
-        }
+        List<ICard> cards = new List<ICard>();
 
         public void UpdateDeck(Stack stack)
         {
             List<ICard> sorted_cards = stack.cards.OrderBy(c => c.damage).ToList();
             sorted_cards.Reverse();
-            
+
+            cards.Clear();
+
             for (int i = 0; i < 4; i++)
             {
-                cards[i] = sorted_cards[i];
+                cards.Add(sorted_cards[i]);
             }
 
-            deckSet = true;
         }
 
         public void ListCards()
         {
-            if (deckSet)
+            int counter = 0;
+            foreach (ICard card in cards)
             {
-                for (int i = 1; i < 5; i++)
-                {
-                    Console.WriteLine(i - 1 + " " + cards[i - 1].name + " " + cards[i - 1].damage);
-                }
+                counter++;
+                Console.WriteLine(counter + " " + card.name + " " + card.damage);
             }
-            else
+            if (counter == 0)
             {
-                Console.WriteLine("The deck ist still empty.");
+                Console.WriteLine("The deck is still empty.");
             }
             Console.WriteLine();
         }
