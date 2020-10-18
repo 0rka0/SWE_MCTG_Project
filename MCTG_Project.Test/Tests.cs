@@ -1,10 +1,12 @@
 using NUnit.Framework;
 using System.IO;
 using System;
+using Moq;
 using MTCG_Project.MTCG;
 using MTCG_Project.MTCG.Cards;
 using MTCG_Project.MTCG.Cards.Monsters;
 using MTCG_Project.MTCG.Cards.Spells;
+using MTCG_Project.MTCG.User;
 
 
 namespace MCTG_Project.Test
@@ -94,6 +96,20 @@ namespace MCTG_Project.Test
 
             Assert.AreEqual(desiredDragonDamage, actualDragonDamage);
             Assert.AreEqual(desiredGoblinDamage, actualGoblinDamage);
+        }
+    }
+
+    public class StackTests
+    {
+        [SetUp]
+        public void Setup()
+        {
+        }
+
+        [Test]
+        public void AddCards()
+        {
+            
         }
     }
 }
