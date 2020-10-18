@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTCG_Webservice", "MTCG_Webservice.csproj", "{F258A89A-68FB-47DE-A410-391AA54112D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F258A89A-68FB-47DE-A410-391AA54112D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F258A89A-68FB-47DE-A410-391AA54112D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F258A89A-68FB-47DE-A410-391AA54112D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F258A89A-68FB-47DE-A410-391AA54112D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DE1291F-7846-4725-A4C4-D7DB70E0BC3B}
+	EndGlobalSection
+EndGlobal
