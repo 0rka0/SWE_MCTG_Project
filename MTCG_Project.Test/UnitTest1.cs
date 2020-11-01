@@ -1,12 +1,10 @@
 using NUnit.Framework;
 using System.IO;
 using System;
-using Moq;
-using MTCG_Project.MTCG;
 using MTCG_Project.MTCG.Cards;
 using MTCG_Project.MTCG.Cards.Monsters;
 using MTCG_Project.MTCG.Cards.Spells;
-using MTCG_Project.MTCG.User;
+using MTCG_Project.MTCG.NamespaceUser;
 
 
 namespace MCTG_Project.Test
@@ -28,7 +26,7 @@ namespace MCTG_Project.Test
             card1 = new Dragon();
             Cardname desiredName = Cardname.Dragon;
             int desiredDamage = 100;
-            Element_type desiredElement = Element_type.Fire;
+            Element_types desiredElement = Element_types.Fire;
             string desiredType = "Monster";
 
             //Assert
@@ -109,7 +107,7 @@ namespace MCTG_Project.Test
         [Test]
         public void AddCards()
         {
-            
+
         }
     }
 }

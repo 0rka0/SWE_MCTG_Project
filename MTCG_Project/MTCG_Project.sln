@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTCG_Project", "MTCG_Project.csproj", "{AF226CC1-6708-48CC-B4DB-4B57FD8C4B62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTCG_Project.Test", "..\MCTG_Project.Test\MTCG_Project.Test.csproj", "{99CBB43E-9C9E-4A32-B307-164786C183A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTCG_Project.Test", "..\MTCG_Project.Test\MTCG_Project.Test.csproj", "{98ECCD84-59A2-4C7D-8986-1C2960B8E12F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{AF226CC1-6708-48CC-B4DB-4B57FD8C4B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF226CC1-6708-48CC-B4DB-4B57FD8C4B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF226CC1-6708-48CC-B4DB-4B57FD8C4B62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99CBB43E-9C9E-4A32-B307-164786C183A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99CBB43E-9C9E-4A32-B307-164786C183A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99CBB43E-9C9E-4A32-B307-164786C183A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99CBB43E-9C9E-4A32-B307-164786C183A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98ECCD84-59A2-4C7D-8986-1C2960B8E12F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98ECCD84-59A2-4C7D-8986-1C2960B8E12F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98ECCD84-59A2-4C7D-8986-1C2960B8E12F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98ECCD84-59A2-4C7D-8986-1C2960B8E12F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

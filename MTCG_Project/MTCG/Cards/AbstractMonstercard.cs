@@ -8,7 +8,7 @@ namespace MTCG_Project.MTCG.Cards
     {
         public Cardname name { get; set; }
         public int damage { get; set; }
-        public Element_type element_type { get; set; }
+        public Element_types element_type { get; set; }
         public string type { get; set; }
         public AbstractMonstercard(Cardname name)
         {
@@ -17,43 +17,43 @@ namespace MTCG_Project.MTCG.Cards
             if (name == Cardname.Dragon)
             {
                 damage = 100;
-                element_type = Element_type.Fire;
+                element_type = Element_types.Fire;
                 type = "Monster";
             }
             else if (name == Cardname.FireElf)
             {
                 damage = 60;
-                element_type = Element_type.Fire;
+                element_type = Element_types.Fire;
                 type = "Monster";
             }
             else if (name == Cardname.Goblin)
             {
                 damage = 40;
-                element_type = Element_type.Normal;
+                element_type = Element_types.Normal;
                 type = "Monster";
             }
             else if (name == Cardname.Knight)
             {
                 damage = 80;
-                element_type = Element_type.Normal;
+                element_type = Element_types.Normal;
                 type = "Monster";
             }
             else if (name == Cardname.Kraken)
             {
                 damage = 60;
-                element_type = Element_type.Water;
+                element_type = Element_types.Water;
                 type = "Monster";
             }
             else if (name == Cardname.Ork)
             {
                 damage = 60;
-                element_type = Element_type.Normal;
+                element_type = Element_types.Normal;
                 type = "Monster";
             }
             else if (name == Cardname.Wizard)
             {
                 damage = 80;
-                element_type = Element_type.Water;
+                element_type = Element_types.Water;
                 type = "Monster";
             }
         }
@@ -84,15 +84,15 @@ namespace MTCG_Project.MTCG.Cards
 
         bool ElementalWeakness(ICard other)
         {
-            if (this.element_type == Element_type.Fire && other.element_type == Element_type.Water)
+            if (this.element_type == Element_types.Fire && other.element_type == Element_types.Water)
             {
                 return true;
             }
-            if (this.element_type == Element_type.Normal && other.element_type == Element_type.Fire)
+            if (this.element_type == Element_types.Normal && other.element_type == Element_types.Fire)
             {
                 return true;
             }
-            if (this.element_type == Element_type.Water && other.element_type == Element_type.Normal)
+            if (this.element_type == Element_types.Water && other.element_type == Element_types.Normal)
             {
                 return true;
             }
@@ -102,15 +102,15 @@ namespace MTCG_Project.MTCG.Cards
 
         bool ElementalAdvantage(ICard other)
         {
-            if (this.element_type == Element_type.Fire && other.element_type == Element_type.Normal)
+            if (this.element_type == Element_types.Fire && other.element_type == Element_types.Normal)
             {
                 return true;
             }
-            if (this.element_type == Element_type.Normal && other.element_type == Element_type.Water)
+            if (this.element_type == Element_types.Normal && other.element_type == Element_types.Water)
             {
                 return true;
             }
-            if (this.element_type == Element_type.Water && other.element_type == Element_type.Fire)
+            if (this.element_type == Element_types.Water && other.element_type == Element_types.Fire)
             {
                 return true;
             }
