@@ -8,7 +8,7 @@ namespace MTCG_Project_Server
     public class RequestHandler
     {
         StreamReader Reader;
-        StreamWriter writer;
+        StreamWriter Writer;
 
         public RequestContext ReadRequest(StreamReader reader)
         {
@@ -26,66 +26,158 @@ namespace MTCG_Project_Server
 
         public void HandleRequest(StreamWriter writer, RequestContext request, List<RequestContext> messageList)
         {
+            Writer = writer;
             int position = 0;
             string[] ressourceElements = request.Ressource.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
             //error when
             //- wrong amount of ressourceElements
             //- first element not "messages"
-            //- second element not an int
-            if (((ressourceElements.Length != 1) && (ressourceElements.Length != 2)) || String.Compare(ressourceElements[0], HttpData.Ressource) != 0 || 
+            //- second element not an valid int
+            if (((ressourceElements.Length != 1) && (ressourceElements.Length != 2)) || (String.Compare(ressourceElements[0], HttpData.Ressource) != 0) ||
                 ((ressourceElements.Length == 2) && ((int.TryParse(ressourceElements[1], out position) != true) || (position <= 0) || (position > messageList.Count))))
             {
-                writer.WriteLine("400: Bad Request");
-                if (String.Compare(request.Verb, HttpData.Delete) != 0)
-                {
-                    string message = ReadContent();
-                }
-                Console.WriteLine("Bad Ressource2");
+                ResponseHandler.Status400(Writer);
                 return;
             }
 
+            if(RequestError(request))
+            {
+                return;
+            }
+
+            HandleRequestByVerb(request, ressourceElements, messageList, position);
+        }
+
+        void HandleRequestByVerb(RequestContext request, string[] ressourceElements, List<RequestContext> messageList, int position)
+        {
             if (String.Compare(request.Verb, HttpData.Post) == 0)
             {
-                string message = ReadContent();
-                request.addMessage(message);
-                if (ressourceElements.Length == 1)
-                {
-                    messageList.Add(request);
-                }
-                else if (ressourceElements.Length == 2)
-                {
-                    messageList.Insert(position-1, request);
-                }
+                HandlePost(request, ressourceElements, messageList, position);
             }
-            if(String.Compare(request.Verb, HttpData.Get) == 0)
+            else if (String.Compare(request.Verb, HttpData.Get) == 0)
             {
-                string message = ReadContent();
-                request.addMessage(message);
-                if (ressourceElements.Length == 1)
-                {
-                    foreach (RequestContext r in messageList)
-                    {
-                        Console.WriteLine(r.Message);
-                    }
-                }
-                else if (ressourceElements.Length == 2)
-                {
-                    Console.WriteLine(messageList[position - 1].Message);
-                }
+                HandleGet(ressourceElements, messageList, position);
             }
-            if (String.Compare(request.Verb, HttpData.Put) == 0)
+            else if ((String.Compare(request.Verb, HttpData.Put) == 0) && (ressourceElements.Length == 2))
             {
-                string message = ReadContent();
-                request.addMessage(message);
+                HandlePut(request, messageList, position);
             }
-            if (String.Compare(request.Verb, HttpData.Delete) == 0)
+            else if (String.Compare(request.Verb, HttpData.Delete) == 0)
             {
-                
+                HandleDelete(ressourceElements, messageList, position);
+            }
+            else
+            {
+                ResponseHandler.Status400(Writer);
             }
         }
 
-        Dictionary<string, string> ReadHeader()
+        void HandlePost(RequestContext request, string[] ressourceElements, List<RequestContext>messageList, int position)
+        {
+            ResponseHandler.Status201(Writer);
+            string message = ReadContent();
+
+            request.addMessage(message);
+            if (ressourceElements.Length == 1)
+            {
+                messageList.Add(request);
+            }
+            else if (ressourceElements.Length == 2)
+            {
+                messageList.Insert(position - 1, request);
+            }
+        }
+
+        void HandleGet(string[] ressourceElements, List<RequestContext> messageList, int position)
+        {
+            string tmpString = "";
+            if (ressourceElements.Length == 1)
+            {
+                foreach (RequestContext r in messageList)
+                {
+                    tmpString += r.Message + "\n";
+                }
+            }
+            else if (ressourceElements.Length == 2)
+            {
+                tmpString += messageList[position - 1].Message + "\n";
+            }
+            ResponseHandler.Status200(Writer, tmpString);
+        }
+
+        void HandlePut(RequestContext request, List<RequestContext> messageList, int position)
+        {
+            ResponseHandler.Status201(Writer);
+            string message = ReadContent();
+            request.addMessage(message);
+
+            messageList.RemoveAt(position - 1);
+            messageList.Insert(position - 1, request);
+        }
+
+        void HandleDelete(string[] ressourceElements, List<RequestContext> messageList, int position)
+        {
+            if (ressourceElements.Length == 1)
+            {
+                messageList.Clear();
+            }
+            else if (ressourceElements.Length == 2)
+            {
+                messageList.RemoveAt(position - 1);
+            }
+            ResponseHandler.Status201(Writer);
+        }
+
+        bool RequestError(RequestContext request)//checks for errors in header
+        {
+            if (!ValidVersion(request.Version))
+            {
+                return true;
+            }
+
+            string len;
+            request.Header_data.TryGetValue(HttpData.ContentLength, out len);
+            if (request.Header_data.ContainsKey(HttpData.ContentLength) && PayloadTooLarge(int.Parse(len)))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        bool ValidVersion(string version)
+        {
+            if(String.Compare(version, HttpData.Version) == 0)
+            {
+                return true;
+            }
+            ResponseHandler.Status505(Writer);
+            return false;
+        }
+
+        bool PayloadTooLarge(int length)
+        {
+            if(length > 100)
+            {
+                ResponseHandler.Status413(Writer);
+                return true;
+            }
+            return false;
+        }
+
+        string[] ReadFirstLine()//reads only first line of request
+        {
+            string tmpString;
+            tmpString = Reader.ReadLine();
+            Console.WriteLine("received: " + tmpString);
+
+            string[] tmpStrList = tmpString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+            return tmpStrList;
+        }
+
+        Dictionary<string, string> ReadHeader()//reads rest of header data and saves pairs in dict
         {
             Dictionary<string, string> header = new Dictionary<string, string>();
             Tuple<string, string> valuePair;
@@ -98,18 +190,7 @@ namespace MTCG_Project_Server
             return header;
         }
 
-        string[] ReadFirstLine()
-        {
-            string tmpString;
-            tmpString = Reader.ReadLine();
-            Console.WriteLine("received: " + tmpString);
-
-            string[] tmpStrList = tmpString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-
-            return tmpStrList;
-        }
-
-        Tuple<string, string> ReadCurLine(string tmpString)
+        Tuple<string, string> ReadCurLine(string tmpString)//returns current line as key, value pair
         {
             string[] tmpStrList = tmpString.Split(": ", StringSplitOptions.RemoveEmptyEntries);
             Console.WriteLine("received: " + tmpString);

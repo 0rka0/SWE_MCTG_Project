@@ -1,38 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Security;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
+//using System.Threading;
 
 namespace MTCG_Project_Server
 {
     class Program
     {
         static List<RequestContext> MessageList = new List<RequestContext>();
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             RequestContext request;
             RequestHandler requestHandler = new RequestHandler();
-            TcpListener listener = new TcpListener(IPAddress.Loopback, 8000);
+            TcpListener listener = new TcpListener(IPAddress.Loopback, 80);
             listener.Start(5);
-
-            Console.CancelKeyPress += (sender, e) => Environment.Exit(0);
 
             while (true)
             {
                 try
                 {
                     Console.WriteLine("Waiting for connection...");
-                    TcpClient client = await listener.AcceptTcpClientAsync();
+                    TcpClient client = listener.AcceptTcpClient();
                     Console.WriteLine("Connected!");
 
                     using StreamReader reader = new StreamReader(client.GetStream());
-                    using StreamWriter writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
-
                     request = requestHandler.ReadRequest(reader);
+
+                    using StreamWriter writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
                     requestHandler.HandleRequest(writer, request, MessageList);
                 }
                 catch (Exception exc)
@@ -41,5 +38,24 @@ namespace MTCG_Project_Server
                 }
             }
         }
+
+        /*static void StartThread(TcpClient client)
+        {
+            var thread = new Thread(new ParameterizedThreadStart(EstablishConnection));
+            thread.Start(client);
+        }
+
+        static void EstablishConnection(object cl)
+        {
+            RequestContext request;
+            RequestHandler requestHandler = new RequestHandler();
+            TcpClient client = (TcpClient)cl;
+
+            using StreamReader reader = new StreamReader(client.GetStream());
+            request = requestHandler.ReadRequest(reader);
+            
+            using StreamWriter writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+            requestHandler.HandleRequest(writer, request, MessageList);
+        }*/
     }
 }
