@@ -14,7 +14,7 @@ namespace MTCG_Project_Server
         static async Task Main(string[] args)
         {
             RequestContext request;
-            RequestHandler requestHandler = new RequestHandler();
+            RequestPreparer requestHandler = new RequestPreparer();
             TcpListener listener = new TcpListener(IPAddress.Loopback, 8000);
             listener.Start(5);
 
@@ -30,7 +30,7 @@ namespace MTCG_Project_Server
                     request = requestHandler.ReadRequest(reader);
 
                     using StreamWriter writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
-                    requestHandler.HandleRequest(writer, request, MessageList);
+                    requestHandler.PrepareRequest(writer, request, MessageList);
                 }
                 catch (Exception exc)
                 {

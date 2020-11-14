@@ -9,9 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTCG_Project.Test", "..\MTC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTCG_Project_Server", "..\MTCG_Project_Server\MTCG_Project_Server.csproj", "{8F39447B-CCCD-497B-9A10-E4DE43833681}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTCG_Project_Client", "..\MTCG_Project_Client\MTCG_Project_Client.csproj", "{DF77A2A8-6CFD-41B2-910C-21A5208D74F0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTCG_Project_Server.Test", "..\MTCG_Project_Server.Test\MTCG_Project_Server.Test.csproj", "{8704F919-F7AD-4C04-8688-E51A681FE349}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTCG_Project_Server.Test", "..\MTCG_Project_Server.Test\MTCG_Project_Server.Test.csproj", "{8704F919-F7AD-4C04-8688-E51A681FE349}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{8F39447B-CCCD-497B-9A10-E4DE43833681}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F39447B-CCCD-497B-9A10-E4DE43833681}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F39447B-CCCD-497B-9A10-E4DE43833681}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF77A2A8-6CFD-41B2-910C-21A5208D74F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF77A2A8-6CFD-41B2-910C-21A5208D74F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF77A2A8-6CFD-41B2-910C-21A5208D74F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF77A2A8-6CFD-41B2-910C-21A5208D74F0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8704F919-F7AD-4C04-8688-E51A681FE349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8704F919-F7AD-4C04-8688-E51A681FE349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8704F919-F7AD-4C04-8688-E51A681FE349}.Release|Any CPU.ActiveCfg = Release|Any CPU

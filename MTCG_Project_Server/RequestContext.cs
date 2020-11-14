@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MTCG_Project_Server
 {
@@ -9,7 +8,7 @@ namespace MTCG_Project_Server
         public string Verb { get; private set; }
         public string Ressource { get; private set; }
         public string Version { get; private set; }
-        public Dictionary<string, string> Header_data { get; private set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> HeaderData { get; private set; } = new Dictionary<string, string>();
         public string Message { get; private set; }
 
         public RequestContext(string verb, string ressource, string version, Dictionary<string,string> header, string message)
@@ -17,7 +16,7 @@ namespace MTCG_Project_Server
             Verb = verb;
             Ressource = ressource;
             Version = version;
-            Header_data = header;
+            HeaderData = header;
             Message = message;
         }
 
@@ -31,7 +30,7 @@ namespace MTCG_Project_Server
             Console.WriteLine(Verb);
             Console.WriteLine(Ressource);
             Console.WriteLine(Version);
-            foreach(KeyValuePair<string, string> kvp in Header_data)
+            foreach(KeyValuePair<string, string> kvp in HeaderData)
             {
                 Console.WriteLine("{0}: {1}", kvp.Key, kvp.Value);
             }

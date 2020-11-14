@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace MTCG_Project_Server
 {
@@ -9,7 +7,7 @@ namespace MTCG_Project_Server
     {
         static string Version = "HTTP/1.1";
         static string Name = "Server: MTCG-Server\r\n";
-        static string ContentType = "Content-Type: text/html\r\n";
+        static string ContentType = "Content-Type: text/plain\r\n";
         static string AcceptRanges = "Accept-Ranges: bytes\r\n";
         static string Status;
         static string Connection;
@@ -19,6 +17,14 @@ namespace MTCG_Project_Server
             Status = "200 Ok\r\n";
             Connection = "Connection: closed\r\n";
             string response = string.Format("{0} {1}{2}{3}{4}{5}Content-Length: {6}\r\n\r\n{7}\r\n\r\n", Version, Status, Name, ContentType, AcceptRanges, Connection, payload.Length, payload);
+            Console.WriteLine(response);
+            writer.WriteLine(response);
+        }
+
+        static void SendWithoutPayload(StreamWriter writer)
+        {
+            Connection = "Connection: closed\r\n";
+            string response = string.Format("{0} {1}{2}{3}{4}{5}Content-Length: {6}\r\n\r\n", Version, Status, Name, ContentType, AcceptRanges, Connection, 0);
             Console.WriteLine(response);
             writer.WriteLine(response);
         }
@@ -51,14 +57,6 @@ namespace MTCG_Project_Server
         {
             Status = "505 HTTP Version not supported\r\n";
             SendWithoutPayload(writer);
-        }
-
-        static void SendWithoutPayload(StreamWriter writer)
-        {
-            Connection = "Connection: closed\r\n";
-            string response = string.Format("{0} {1}{2}{3}{4}{5}Content-Length: {6}\r\n\r\n", Version, Status, Name, ContentType, AcceptRanges, Connection, 0);
-            Console.WriteLine(response);
-            writer.WriteLine(response);
         }
     }
 }
