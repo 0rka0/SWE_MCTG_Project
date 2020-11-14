@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-//using System.Threading.Tasks;
-//using System.Threading;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace MTCG_Project_Server
 {
     class Program
     {
         static List<RequestContext> MessageList = new List<RequestContext>();
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RequestContext request;
             RequestHandler requestHandler = new RequestHandler();
-            TcpListener listener = new TcpListener(IPAddress.Loopback, 80);
+            TcpListener listener = new TcpListener(IPAddress.Loopback, 8000);
             listener.Start(5);
 
             while (true)
@@ -23,7 +23,7 @@ namespace MTCG_Project_Server
                 try
                 {
                     Console.WriteLine("Waiting for connection...");
-                    TcpClient client = listener.AcceptTcpClient();
+                    TcpClient client = await listener.AcceptTcpClientAsync();
                     Console.WriteLine("Connected!");
 
                     using StreamReader reader = new StreamReader(client.GetStream());
@@ -39,6 +39,7 @@ namespace MTCG_Project_Server
             }
         }
 
+        //Potential Setup for multithreading, not implemented yet
         /*static void StartThread(TcpClient client)
         {
             var thread = new Thread(new ParameterizedThreadStart(EstablishConnection));
