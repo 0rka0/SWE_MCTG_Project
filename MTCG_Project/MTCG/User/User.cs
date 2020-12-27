@@ -10,8 +10,8 @@ namespace MTCG_Project.MTCG.NamespaceUser
 {
     public class User
     {
-        public string username { get; private set; }
-        public string password;
+        public string username { get; set; }
+        public string password { get; set; }
         public int coins { get; private set; }
         public int gamesPlayed { get; private set; }
         public int elo { get; private set; }
