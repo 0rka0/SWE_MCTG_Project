@@ -42,7 +42,7 @@ namespace MTCG_Project.Server
             string message = ReadContent();
             request.addMessage(message);
 
-            handler.HandlePost(request, ressourceElements);
+            handler.HandlePost(request);
 
             messageList.Add(request);
 
