@@ -49,6 +49,8 @@ namespace MTCG_Project.Interaction
             await using (var reader = await cmd.ExecuteReaderAsync())
                 while (await reader.ReadAsync())
                     Console.WriteLine("{0} {1}", reader[0], reader[1]);
+
+            await conn.CloseAsync();
         }
     }
 }
