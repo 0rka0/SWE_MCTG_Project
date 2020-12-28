@@ -1,10 +1,4 @@
-﻿using MTCG_Project.MTCG;
-using MTCG_Project.MTCG.Cards;
-using MTCG_Project.MTCG.Cards.Monsters;
-using MTCG_Project.MTCG.Cards.Spells;
-using MTCG_Project.MTCG.NamespaceStore;
-using MTCG_Project.MTCG.NamespaceUser;
-using MTCG_Project.Server;
+﻿using MTCG_Project.Server;
 using System;
 using System.Collections.Generic;
 using System.IO;

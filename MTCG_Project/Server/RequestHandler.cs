@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MTCG_Project.MTCG.NamespaceUser;
-using Newtonsoft.Json;
+using MTCG_Project.Interaction;
 
 namespace MTCG_Project.Server
 {
@@ -10,25 +9,25 @@ namespace MTCG_Project.Server
     {
         StreamWriter Writer;
         StreamReader Reader;
-        public void HandleRequestByVerb(StreamReader reader, StreamWriter writer, RequestContext request, string[] ressourceElements, List<RequestContext> messageList, int position)
+        public void HandleRequestByVerb(StreamReader reader, StreamWriter writer, RequestContext request, string[] ressourceElements, List<RequestContext> messageList)
         {
             Writer = writer;
             Reader = reader;
             if (String.Compare(request.Verb, HttpData.Post) == 0)
             {
-                HandlePost(request, ressourceElements, messageList, position);
+                HandlePost(request, ressourceElements, messageList);
             }
             else if (String.Compare(request.Verb, HttpData.Get) == 0)
             {
-                HandleGet(ressourceElements, messageList, position);
+                HandleGet(ressourceElements, messageList);
             }
             else if ((String.Compare(request.Verb, HttpData.Put) == 0) && (ressourceElements.Length == 2))
             {
-                HandlePut(request, messageList, position);
+                HandlePut(request, messageList);
             }
             else if (String.Compare(request.Verb, HttpData.Delete) == 0)
             {
-                HandleDelete(ressourceElements, messageList, position);
+                HandleDelete(ressourceElements, messageList);
             }
             else
             {
@@ -36,59 +35,43 @@ namespace MTCG_Project.Server
             }
         }
 
-        void HandlePost(RequestContext request, string[] ressourceElements, List<RequestContext>messageList, int position)
+        void HandlePost(RequestContext request, string[] ressourceElements, List<RequestContext>messageList)
         {
+            PostRequests handler = new PostRequests();
             ResponseHandler.Status201(Writer);
             string message = ReadContent();
-
             request.addMessage(message);
-            if (ressourceElements.Length == 1)
-            {
-                messageList.Add(request);
-            }
-            else if (ressourceElements.Length == 2)
-            {
-                messageList.Insert(position - 1, request);
-            }
+
+            handler.HandlePost(request, ressourceElements);
+
+            messageList.Add(request);
+
         }
 
-        void HandleGet(string[] ressourceElements, List<RequestContext> messageList, int position)
+        void HandleGet(string[] ressourceElements, List<RequestContext> messageList)
         {
             string tmpString = "";
-            if (ressourceElements.Length == 1)
+            
+            foreach (RequestContext r in messageList)
             {
-                foreach (RequestContext r in messageList)
-                {
-                    tmpString += r.Message + "\n";
-                }
-            }
-            else if (ressourceElements.Length == 2)
-            {
-                tmpString += messageList[position - 1].Message + "\n";
+                tmpString += r.Message + "\n";
             }
             ResponseHandler.Status200(Writer, tmpString);
         }
 
-        void HandlePut(RequestContext request, List<RequestContext> messageList, int position)
+        void HandlePut(RequestContext request, List<RequestContext> messageList)
         {
             ResponseHandler.Status201(Writer);
             string message = ReadContent();
             request.addMessage(message);
 
-            messageList.RemoveAt(position - 1);
-            messageList.Insert(position - 1, request);
+            //messageList.RemoveAt(position - 1);
+            //messageList.Insert(position - 1, request);
         }
 
-        void HandleDelete(string[] ressourceElements, List<RequestContext> messageList, int position)
+        void HandleDelete(string[] ressourceElements, List<RequestContext> messageList)
         {
-            if (ressourceElements.Length == 1)
-            {
-                messageList.Clear();
-            }
-            else if (ressourceElements.Length == 2)
-            {
-                messageList.RemoveAt(position - 1);
-            }
+            messageList.Clear();
             ResponseHandler.Status201(Writer);
         }
 

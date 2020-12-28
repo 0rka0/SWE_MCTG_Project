@@ -26,7 +26,6 @@ namespace MTCG_Project.Server
         public void PrepareRequest(StreamWriter writer, RequestContext request, List<RequestContext> messageList)
         {
             Writer = writer;
-            int position = 0;
             string[] ressourceElements = request.Ressource.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
 
@@ -34,8 +33,7 @@ namespace MTCG_Project.Server
             //- wrong amount of ressourceElements
             //- first element not "messages"
             //- second element not an valid int
-            if (((ressourceElements.Length != 1) && (ressourceElements.Length != 2)) || (
-                ((ressourceElements.Length == 2) && ((int.TryParse(ressourceElements[1], out position) != true) || (position <= 0) || (position > messageList.Count)))))
+            if ((ressourceElements.Length != 1) && (ressourceElements.Length != 2))
             {
                 ResponseHandler.Status400(Writer);
                 return;
@@ -47,12 +45,17 @@ namespace MTCG_Project.Server
             }
 
             RequestHandler requestHandler = new RequestHandler();
-            requestHandler.HandleRequestByVerb(Reader, Writer, request, ressourceElements, messageList, position);
+            requestHandler.HandleRequestByVerb(Reader, Writer, request, ressourceElements, messageList);
         }
 
         bool RequestError(RequestContext request)//checks for errors in header
         {
             if (!ValidVersion(request.Version))
+            {
+                return true;
+            }
+
+            if (!ValidRessource(request.Ressource))
             {
                 return true;
             }
@@ -74,6 +77,56 @@ namespace MTCG_Project.Server
                 return true;
             }
             ResponseHandler.Status505(Writer);
+            return false;
+        }
+
+        bool ValidRessource(string ress)
+        {
+            if (String.Compare(ress, RequestCalls.users) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.sessions) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.packages) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.transactions) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.trans_packs) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.cards) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.deck) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.stats) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.score) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.battles) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.tradings) == 0)
+            {
+                return true;
+            }
+            ResponseHandler.Status400(Writer);
             return false;
         }
 
