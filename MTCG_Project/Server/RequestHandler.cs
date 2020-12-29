@@ -37,12 +37,12 @@ namespace MTCG_Project.Server
 
         void HandlePost(RequestContext request, string[] ressourceElements, List<RequestContext>messageList)
         {
-            PostRequests handler = new PostRequests();
+            PostHandler handler = new PostHandler();
             ResponseHandler.Status201(Writer);
             string message = ReadContent();
             request.addMessage(message);
 
-            handler.HandlePost(request);
+            handler.HandleByCommand(request);
 
             messageList.Add(request);
 

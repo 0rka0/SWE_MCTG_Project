@@ -7,18 +7,18 @@ using MTCG_Project.Server;
 
 namespace MTCG_Project.Interaction
 {
-    public class UserDatabaseHandler
+    static public class UserDatabaseHandler
     {
-        string connString = "Host=localhost;Username=postgres;Password=postgres;Database=postgres";
-        public void InsertUser(User user)
+        static string connString = "Host=localhost;Username=postgres;Password=postgres;Database=postgres";  //connection info db
+        static public void InsertUser(User user)
         {
             int maxId = 0;
-            using var conn = new NpgsqlConnection(connString);
+            using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
 
             try
             {
-                using (var cmd = new NpgsqlCommand("Select max(uid) FROM users", conn))
+                using (var cmd = new NpgsqlCommand("Select max(uid) FROM users", conn))     //selecting and reading something from db
                 using (var reader = cmd.ExecuteReader())
                     while (reader.Read())
                         maxId = (int)reader[0];
@@ -27,12 +27,12 @@ namespace MTCG_Project.Interaction
             {
             }
 
-            string token = String.Format("Basic {0}-mctgToken", user.username);
+            string token = String.Format("Basic {0}-mtcgToken", user.username);
             try
             {
-                using (var cmd = new NpgsqlCommand("INSERT INTO users VALUES (@id, @un, @pw, @c, @gp, @elo, @token)", conn))
+                using (var cmd = new NpgsqlCommand("INSERT INTO users VALUES (@id, @un, @pw, @c, @gp, @elo, @token)", conn))        //inserting into db
                 {
-                    cmd.Parameters.AddWithValue("@id", maxId + 1);
+                    cmd.Parameters.AddWithValue("@id", maxId + 1);      //adding parameters
                     cmd.Parameters.AddWithValue("@un", user.username);
                     cmd.Parameters.AddWithValue("@pw", user.password);
                     cmd.Parameters.AddWithValue("@c", user.coins);
@@ -42,7 +42,7 @@ namespace MTCG_Project.Interaction
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch(Exception e)
+            catch(Exception e)      //potential errors with db solved by exception handling
             {
                 string exMsg = String.Format("User mit selbem Username existiert bereits!");
                 conn.Close();
@@ -57,7 +57,7 @@ namespace MTCG_Project.Interaction
             conn.Close();
         }
 
-        public void LoginUser(User user)
+        static public void LoginUser(User user)
         {
             string username = null;
             string password = null;
@@ -95,7 +95,7 @@ namespace MTCG_Project.Interaction
                 {
                     sessionActive = reader[0].ToString();
                 }
-            Console.WriteLine(sessionActive);
+            
             if (String.Compare(sessionActive, "1") == 0)
             {
                 string exMsg = String.Format("User bereits eingeloggt!");
@@ -103,13 +103,44 @@ namespace MTCG_Project.Interaction
                 throw new Exception(exMsg);
             }
 
-
             using (var cmd = new NpgsqlCommand("UPDATE users SET session = current_timestamp + (60 || 'minutes')::interval WHERE username = @un", conn))
             {
                 cmd.Parameters.AddWithValue("@un", user.username);
                 cmd.ExecuteNonQuery();
             }
             conn.Close();
+        }
+
+        static public int AuthUser(string token)
+        {
+            string username = null;
+            string loggedIn = null;
+            Console.WriteLine(token);
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            string selectString = String.Format("SELECT username, count(username) FROM users WHERE current_timestamp < session AND token = '{0}' GROUP BY username", token);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    username = reader[0].ToString();
+                    loggedIn = reader[1].ToString();
+                }
+            conn.Close();
+            
+            //different user states: admin, logged in user, not logged int
+            if (String.Compare(loggedIn, "0") == 0)
+            {
+                return 0;
+            }
+
+            if (String.Compare(username, "admin") == 0)
+            {
+                return 2;
+            }
+            
+            return 1;
         }
     }
 }
