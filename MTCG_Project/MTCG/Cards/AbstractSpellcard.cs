@@ -6,11 +6,12 @@ namespace MTCG_Project.MTCG.Cards
 {
     public abstract class AbstractSpellcard : ICard
     {
+        public string id { get; set; }
         public Cardname name { get; set; }
-        public int damage { get; set; }
+        public float damage { get; set; }
         public Element_types element_type { get; set; }
         public string type { get; set; }
-        public AbstractSpellcard(Cardname name, int damage)
+        public AbstractSpellcard(Cardname name, float damage)
         {
             this.name = name;
 
@@ -34,7 +35,7 @@ namespace MTCG_Project.MTCG.Cards
             }
         }
 
-        public int CombatBehavior(ICard otherCard)
+        public float CombatBehavior(ICard otherCard)
         {
             if (SpecialBehavior(otherCard))
             {

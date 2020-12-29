@@ -6,7 +6,7 @@ namespace MTCG_Project.MTCG.Cards.Monsters
 {
     public class WaterGoblin : AbstractMonstercard
     {
-        public WaterGoblin(int damage) : base(Cardname.WaterGoblin, damage) { }
+        public WaterGoblin(float damage) : base(Cardname.WaterGoblin, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {

@@ -6,7 +6,7 @@ namespace MTCG_Project.MTCG.Cards.Monsters
 {
     public class Ork : AbstractMonstercard
     {
-        public Ork(int damage) : base(Cardname.Ork, damage) { }
+        public Ork(float damage) : base(Cardname.Ork, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {

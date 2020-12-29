@@ -6,7 +6,7 @@ namespace MTCG_Project.MTCG.Cards.Spells
 {
     public class RegularSpell : AbstractSpellcard
     {
-        public RegularSpell(int damage) : base(Cardname.RegularSpell, damage) { }
+        public RegularSpell(float damage) : base(Cardname.RegularSpell, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {
