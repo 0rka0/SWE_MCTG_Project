@@ -44,6 +44,21 @@ namespace MTCG_Project.Interaction
             return UserDatabaseHandler.AuthUser(token);
         }
 
+        static public User GetUserData(RequestContext request)
+        {
+            string token = GetToken(request);
+
+            User user = new User("");
+            user = UserDatabaseHandler.GetUserData(token, user);
+
+            return user;
+        }
+
+        static public void UpdateUserData(User user)
+        {
+            UserDatabaseHandler.UpdateUserData(user);
+        }
+
         static string GetToken(RequestContext request)
         {
             return request.HeaderData["Authorization"];

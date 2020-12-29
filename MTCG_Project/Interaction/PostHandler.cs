@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using MTCG_Project.Server;
-using MTCG_Project.MTCG.NamespaceUser;
 
 namespace MTCG_Project.Interaction
 {
-    public class PostHandler
+    public static class PostHandler
     {
-        public void HandleByCommand(RequestContext request)
+        public static void HandleByCommand(RequestContext request)
         {
             if(String.Compare(request.Ressource, RequestCalls.users) == 0)
             {
@@ -21,6 +20,10 @@ namespace MTCG_Project.Interaction
             if(String.Compare(request.Ressource, RequestCalls.packages) == 0)
             {
                 PackageHandler.CreatePackage(request);
+            }
+            if(String.Compare(request.Ressource, RequestCalls.trans_packs) == 0)
+            {
+                PackageHandler.AcquirePackage(request);
             }
         }
     }

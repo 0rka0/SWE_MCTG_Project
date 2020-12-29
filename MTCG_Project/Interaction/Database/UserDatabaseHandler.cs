@@ -44,15 +44,15 @@ namespace MTCG_Project.Interaction
             }
             catch(Exception e)      //potential errors with db solved by exception handling
             {
-                string exMsg = String.Format("User mit selbem Username existiert bereits!");
+                string exMsg = String.Format("User mit selbem Username existiert bereits!\n");
                 conn.Close();
                 throw new Exception(exMsg);
             }
 
-            using (var cmd = new NpgsqlCommand("Select uid, username FROM users", conn))
+            /*using (var cmd = new NpgsqlCommand("Select uid, username FROM users", conn))
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())
-                    Console.WriteLine("{0} {1}", reader[0], reader[1]);
+                    Console.WriteLine("{0} {1}", reader[0], reader[1]);*/
 
             conn.Close();
         }
@@ -76,14 +76,14 @@ namespace MTCG_Project.Interaction
 
             if (username == null)
             {
-                string exMsg = String.Format("Username {0} does not exist", user.username);
+                string exMsg = String.Format("Username {0} does not exist!\n", user.username);
                 conn.Close();
                 throw new Exception(exMsg);
             }
 
             if (!((String.Compare(username, user.username) == 0) && (String.Compare(password, user.password) == 0)))
             {
-                string exMsg = String.Format("Password does not fit Username");
+                string exMsg = String.Format("Password does not fit Username\n");
                 conn.Close();
                 throw new Exception(exMsg);
             }
@@ -98,7 +98,7 @@ namespace MTCG_Project.Interaction
             
             if (String.Compare(sessionActive, "1") == 0)
             {
-                string exMsg = String.Format("User bereits eingeloggt!");
+                string exMsg = String.Format("User bereits eingeloggt!\n");
                 conn.Close();
                 throw new Exception(exMsg);
             }
@@ -141,6 +141,44 @@ namespace MTCG_Project.Interaction
             }
             
             return 1;
+        }
+
+        static public User GetUserData(string token, User user)
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo FROM users WHERE token = '{0}'", token);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    user.uid = (int)reader[0];
+                    user.username = reader[1].ToString();
+                    user.coins = (int)reader[2];
+                    user.gamesPlayed = (int)reader[3];
+                    user.elo = (int)reader[4];
+                }
+            conn.Close();
+
+            return user;
+        }
+
+        static public void UpdateUserData(User user)
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            using (var cmd = new NpgsqlCommand("UPDATE users SET coins = @coins, games_played = @gp, elo = @elo WHERE uid = @uid", conn))
+            {      //adding parameters
+                cmd.Parameters.AddWithValue("@coins", user.coins);
+                cmd.Parameters.AddWithValue("@gp", user.gamesPlayed);
+                cmd.Parameters.AddWithValue("@elo", user.elo);
+                cmd.Parameters.AddWithValue("@uid", user.uid);
+                cmd.ExecuteNonQuery();
+            }
+
+            conn.Close();
         }
     }
 }

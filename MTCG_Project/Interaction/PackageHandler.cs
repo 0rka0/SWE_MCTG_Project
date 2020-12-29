@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using MTCG_Project.Server;
-using MTCG_Project.MTCG.NamespaceStore;
+using MTCG_Project.MTCG.NamespaceUser;
 using MTCG_Project.MTCG.Cards;
 
 namespace MTCG_Project.Interaction
@@ -23,16 +23,55 @@ namespace MTCG_Project.Interaction
                     cards[counter] = JsonConvert.DeserializeObject<DummyCard>(jsonStrings[counter]);
                     counter++;
                 }
-                Console.WriteLine(cards[0].id + " " + cards[0].name + " " + cards[0].damage);
-                Console.WriteLine(cards[1].id + " " + cards[1].name + " " + cards[1].damage);
-                Console.WriteLine(cards[2].id + " " + cards[2].name + " " + cards[2].damage);
-                Console.WriteLine(cards[3].id + " " + cards[3].name + " " + cards[3].damage);
-                Console.WriteLine(cards[4].id + " " + cards[4].name + " " + cards[4].damage);
+
+                try
+                {
+                    CardsPacksDatabaseHandler.InsertPackage(cards);
+                    Console.WriteLine("Package wurde erfolgreich hinzugefügt!\n");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
                 return;
             }
-            
+
             if (userstate == 1)
+            {
                 Console.WriteLine("Adminrechte benötigt!\n");
+                return;
+            }
+
+            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+        }
+
+        static public void AcquirePackage(RequestContext request)
+        {
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)     //adminrechte benötigt
+            {
+                User user = UserHandler.GetUserData(request);
+                if (user.coins < 5)
+                {
+                    Console.WriteLine("Nicht genug Muenzen im Besitz!\n");
+                    return;
+                }
+
+                try
+                {
+                    CardsPacksDatabaseHandler.AcquirePackage(user);
+                    user.coins -= 5;
+                    UserHandler.UpdateUserData(user);
+                    Console.WriteLine("Package wurde erfolgreich gekauft!\n");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                return;
+            }
 
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
         }

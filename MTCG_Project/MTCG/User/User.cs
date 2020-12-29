@@ -10,34 +10,26 @@ namespace MTCG_Project.MTCG.NamespaceUser
 {
     public class User
     {
+        public int uid { get; set; }
         public string username { get; set; }
         public string password { get; set; }
-        public int coins { get; private set; }
-        public int gamesPlayed { get; private set; }
-        public int elo { get; private set; }
-        public string token { get; private set; }
+        public int coins { get; set; }
+        public int gamesPlayed { get; set; }
+        public int elo { get;set; }
+        public string token { get; set; }
 
         public Stack stack;
         public Deck deck;
 
         public User(string name)
         {
+            uid = 0;
             username = name;
             elo = 100;
             coins = 20;
-            token = null;
+            token = "Basic " + username + "-mtcgToken";
             stack = new Stack();
             deck = new Deck();
-        }
-
-        public void ActivateToken()
-        {
-            token = String.Format("Basic {0}-mctgToken", username);
-        }
-
-        public void DeactivateToken()
-        {
-            token = null;
         }
 
         public void GetPack(Pack pack)
