@@ -9,6 +9,6 @@ namespace MTCG_Project.MTCG.Cards
         public string id { get; set; }
         public string name { get; set; }
         public float damage { get; set; }
-        public int packOrUserId { get; set; }         
+
     }
 }

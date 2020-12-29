@@ -21,7 +21,7 @@ namespace MTCG_Project.Server
             {
                 HandleGet(request, ressourceElements, messageList);
             }
-            else if ((String.Compare(request.Verb, HttpData.Put) == 0) && (ressourceElements.Length == 2))
+            else if (String.Compare(request.Verb, HttpData.Put) == 0)
             {
                 HandlePut(request, messageList);
             }
@@ -43,7 +43,7 @@ namespace MTCG_Project.Server
 
             PostHandler.HandleByCommand(request);
 
-            messageList.Add(request);
+            //messageList.Add(request);
         }
 
         void HandleGet(RequestContext request, string[] ressourceElements, List<RequestContext> messageList)
@@ -59,6 +59,8 @@ namespace MTCG_Project.Server
             ResponseHandler.Status201(Writer);
             string message = ReadContent();
             request.addMessage(message);
+
+            PutHandler.HandleByCommand(request);
 
             //messageList.RemoveAt(position - 1);
             //messageList.Insert(position - 1, request);
