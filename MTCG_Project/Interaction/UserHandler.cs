@@ -41,7 +41,10 @@ namespace MTCG_Project.Interaction
         {
             string token = GetToken(request);
 
-            return UserDatabaseHandler.AuthUser(token);
+            if(token != null)
+                return UserDatabaseHandler.AuthUser(token);
+
+            return 0;
         }
 
         static public User GetUserData(RequestContext request)
@@ -61,7 +64,10 @@ namespace MTCG_Project.Interaction
 
         static string GetToken(RequestContext request)
         {
-            return request.HeaderData["Authorization"];
+            if(request.HeaderData.ContainsKey("Authorization"))
+                return request.HeaderData["Authorization"];
+
+            return null;
         }
     }
 }

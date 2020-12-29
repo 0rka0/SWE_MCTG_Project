@@ -29,5 +29,26 @@ namespace MTCG_Project.Interaction
 
             conn.Close();
         }
+
+        public static string GetStackByUser(User user)
+        {
+            string str = String.Format("Stack of {0}:\n", user.username);
+            using var conn = new NpgsqlConnection(connString);  //connect to db
+            conn.Open();
+
+            string selectString = String.Format("SELECT id, cardname, damage FROM cards_users WHERE userid = {0}", user.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    //str += "Id: " + reader[0].ToString() + " | ";
+                    str += "Name: " + reader[1].ToString() + "\n";
+                    str += " Damage: " + reader[2].ToString() + "\n";
+                }
+
+            //Console.WriteLine(str);
+            conn.Close();
+            return str;
+        }
     }
 }

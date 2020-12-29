@@ -49,7 +49,7 @@ namespace MTCG_Project.Interaction
         static public void AcquirePackage(RequestContext request)
         {
             int userstate = UserHandler.AuthUser(request);
-            if (userstate == 1 || userstate == 2)     //adminrechte benötigt
+            if (userstate == 1 || userstate == 2)     //eingeloggt
             {
                 User user = UserHandler.GetUserData(request);
                 if (user.coins < 5)

@@ -16,6 +16,7 @@ namespace MTCG_Project.Server
         {
             Status = "200 Ok\r\n";
             Connection = "Connection: closed\r\n";
+            //ContentType = "Content-Type: application/json\r\n";
             string response = string.Format("{0} {1}{2}{3}{4}{5}Content-Length: {6}\r\n\r\n{7}\r\n\r\n", Version, Status, Name, ContentType, AcceptRanges, Connection, payload.Length, payload);
             Console.WriteLine(response);
             writer.WriteLine(response);

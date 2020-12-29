@@ -7,12 +7,17 @@ namespace MTCG_Project.Interaction
 {
     public static class GetHandler
     {
-        public static void HandleByCommand(RequestContext request)
+        public static string HandleByCommand(RequestContext request)
         {
             if (String.Compare(request.Ressource, RequestCalls.cards) == 0)
             {
-                UserHandler.CreateUser(request);
+                return UserCardsHandler.ShowStack(request);
             }
+            if (String.Compare(request.Ressource, RequestCalls.deck) == 0)
+            {
+                return UserCardsHandler.ShowDeck(request);
+            }
+            return "Kein passender Befehl!";
         }
     }
 }

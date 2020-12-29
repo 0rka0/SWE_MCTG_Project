@@ -19,7 +19,7 @@ namespace MTCG_Project.Server
             }
             else if (String.Compare(request.Verb, HttpData.Get) == 0)
             {
-                HandleGet(ressourceElements, messageList);
+                HandleGet(request, ressourceElements, messageList);
             }
             else if ((String.Compare(request.Verb, HttpData.Put) == 0) && (ressourceElements.Length == 2))
             {
@@ -46,14 +46,11 @@ namespace MTCG_Project.Server
             messageList.Add(request);
         }
 
-        void HandleGet(string[] ressourceElements, List<RequestContext> messageList)
+        void HandleGet(RequestContext request, string[] ressourceElements, List<RequestContext> messageList)
         {
-            string tmpString = "";
+            string tmpString = GetHandler.HandleByCommand(request);
+            Console.WriteLine(tmpString);
             
-            foreach (RequestContext r in messageList)
-            {
-                tmpString += r.Message + "\n";
-            }
             ResponseHandler.Status200(Writer, tmpString);
         }
 
