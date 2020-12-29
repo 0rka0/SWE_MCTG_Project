@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Interaction\GetRequests\**" />
-    <EmbeddedResource Remove="Interaction\GetRequests\**" />
-    <None Remove="Interaction\GetRequests\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Npgsql" Version="5.0.1.1" />
   </ItemGroup>
