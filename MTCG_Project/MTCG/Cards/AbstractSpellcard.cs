@@ -10,25 +10,25 @@ namespace MTCG_Project.MTCG.Cards
         public int damage { get; set; }
         public Element_types element_type { get; set; }
         public string type { get; set; }
-        public AbstractSpellcard(Cardname name)
+        public AbstractSpellcard(Cardname name, int damage)
         {
             this.name = name;
 
             if (name == Cardname.FireSpell)
             {
-                damage = 100;
+                this.damage = damage;
                 element_type = Element_types.Fire;
                 type = "Spell";
             }
             else if (name == Cardname.WaterSpell)
             {
-                damage = 100;
+                this.damage = damage;
                 element_type = Element_types.Water;
                 type = "Spell";
             }
-            else if (name == Cardname.NormalSpell)
+            else if (name == Cardname.RegularSpell)
             {
-                damage = 100;
+                this.damage = damage;
                 element_type = Element_types.Normal;
                 type = "Spell";
             }

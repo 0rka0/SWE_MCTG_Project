@@ -6,7 +6,7 @@ namespace MTCG_Project.MTCG.Cards.Spells
 {
     public class WaterSpell : AbstractSpellcard
     {
-        public WaterSpell() : base(Cardname.WaterSpell) { }
+        public WaterSpell(int damage) : base(Cardname.WaterSpell, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {

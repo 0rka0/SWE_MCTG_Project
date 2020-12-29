@@ -10,26 +10,27 @@ namespace MTCG_Project.Interaction
     public class UserDatabaseHandler
     {
         string connString = "Host=localhost;Username=postgres;Password=postgres;Database=postgres";
-        public async void InsertUser(User user)
+        public void InsertUser(User user)
         {
             int maxId = 0;
-            await using var conn = new NpgsqlConnection(connString);
-            await conn.OpenAsync();
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
 
             try
             {
-                await using (var cmd = new NpgsqlCommand("Select max(uid) FROM users", conn))
-                await using (var reader = await cmd.ExecuteReaderAsync())
-                    while (await reader.ReadAsync())
+                using (var cmd = new NpgsqlCommand("Select max(uid) FROM users", conn))
+                using (var reader = cmd.ExecuteReader())
+                    while (reader.Read())
                         maxId = (int)reader[0];
             }
             catch(Exception e)
             {
             }
 
+            string token = String.Format("Basic {0}-mctgToken", user.username);
             try
             {
-                await using (var cmd = new NpgsqlCommand("INSERT INTO users VALUES (@id, @un, @pw, @c, @gp, @elo)", conn))
+                using (var cmd = new NpgsqlCommand("INSERT INTO users VALUES (@id, @un, @pw, @c, @gp, @elo, @token)", conn))
                 {
                     cmd.Parameters.AddWithValue("@id", maxId + 1);
                     cmd.Parameters.AddWithValue("@un", user.username);
@@ -37,56 +38,78 @@ namespace MTCG_Project.Interaction
                     cmd.Parameters.AddWithValue("@c", user.coins);
                     cmd.Parameters.AddWithValue("@gp", user.gamesPlayed);
                     cmd.Parameters.AddWithValue("@elo", user.elo);
-                    await cmd.ExecuteNonQueryAsync();
+                    cmd.Parameters.AddWithValue("@token", token);
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch(Exception e)
             {
-                await conn.CloseAsync();
-                Console.WriteLine("User mit selbem Username existiert bereits!");
-                return;
+                string exMsg = String.Format("User mit selbem Username existiert bereits!");
+                conn.Close();
+                throw new Exception(exMsg);
             }
 
-            Console.WriteLine("User: {0}, wurde erfolgreich erstellt!", user.username);
-
-            await using (var cmd = new NpgsqlCommand("Select uid, username FROM users", conn))
-            await using (var reader = await cmd.ExecuteReaderAsync())
-                while (await reader.ReadAsync())
+            using (var cmd = new NpgsqlCommand("Select uid, username FROM users", conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
                     Console.WriteLine("{0} {1}", reader[0], reader[1]);
 
-            await conn.CloseAsync();
+            conn.Close();
         }
 
-        public async void CheckUser(User user)
+        public void LoginUser(User user)
         {
             string username = null;
             string password = null;
-            await using var conn = new NpgsqlConnection(connString);
-            await conn.OpenAsync();
+            string sessionActive = null;
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
 
             string selectString = String.Format("Select username, pw FROM users WHERE username = '{0}'", user.username);
-            await using (var cmd = new NpgsqlCommand(selectString, conn))
-            await using (var reader = await cmd.ExecuteReaderAsync())
-                while (await reader.ReadAsync())
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
                 {
                     username = reader[0].ToString();
                     password = reader[1].ToString();
                 }
 
-            await conn.CloseAsync();
             if (username == null)
             {
-                Console.WriteLine("Username {0} does not exist", user.username);
-                return;
+                string exMsg = String.Format("Username {0} does not exist", user.username);
+                conn.Close();
+                throw new Exception(exMsg);
             }
 
             if (!((String.Compare(username, user.username) == 0) && (String.Compare(password, user.password) == 0)))
             {
-                Console.WriteLine("Password does not fit Username");
-                return;
+                string exMsg = String.Format("Password does not fit Username");
+                conn.Close();
+                throw new Exception(exMsg);
             }
 
-            Console.WriteLine("Login successful!");
+            selectString = String.Format("SELECT count(*) FROM users WHERE current_timestamp < session AND username = '{0}'", user.username);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    sessionActive = reader[0].ToString();
+                }
+            Console.WriteLine(sessionActive);
+            if (String.Compare(sessionActive, "1") == 0)
+            {
+                string exMsg = String.Format("User bereits eingeloggt!");
+                conn.Close();
+                throw new Exception(exMsg);
+            }
+
+
+            using (var cmd = new NpgsqlCommand("UPDATE users SET session = current_timestamp + (60 || 'minutes')::interval WHERE username = @un", conn))
+            {
+                cmd.Parameters.AddWithValue("@un", user.username);
+                cmd.ExecuteNonQuery();
+            }
+            conn.Close();
         }
     }
 }

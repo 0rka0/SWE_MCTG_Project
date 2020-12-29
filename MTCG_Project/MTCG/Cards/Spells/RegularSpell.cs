@@ -4,9 +4,9 @@ using System.Text;
 
 namespace MTCG_Project.MTCG.Cards.Spells
 {
-    public class NormalSpell : AbstractSpellcard
+    public class RegularSpell : AbstractSpellcard
     {
-        public NormalSpell() : base(Cardname.NormalSpell) { }
+        public RegularSpell(int damage) : base(Cardname.RegularSpell, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {

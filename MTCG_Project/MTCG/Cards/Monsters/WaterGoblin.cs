@@ -4,9 +4,9 @@ using System.Text;
 
 namespace MTCG_Project.MTCG.Cards.Monsters
 {
-    public class Goblin : AbstractMonstercard
+    public class WaterGoblin : AbstractMonstercard
     {
-        public Goblin() : base(Cardname.Goblin) { }
+        public WaterGoblin(int damage) : base(Cardname.WaterGoblin, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {

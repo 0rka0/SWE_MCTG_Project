@@ -6,7 +6,7 @@ namespace MTCG_Project.MTCG.Cards.Monsters
 {
     public class Knight : AbstractMonstercard
     {
-        public Knight() : base(Cardname.Knight) { }
+        public Knight(int damage) : base(Cardname.Knight, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {

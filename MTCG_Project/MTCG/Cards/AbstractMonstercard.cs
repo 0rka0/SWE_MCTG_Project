@@ -10,49 +10,49 @@ namespace MTCG_Project.MTCG.Cards
         public int damage { get; set; }
         public Element_types element_type { get; set; }
         public string type { get; set; }
-        public AbstractMonstercard(Cardname name)
+        public AbstractMonstercard(Cardname name, int damage)
         {
             this.name = name;
 
             if (name == Cardname.Dragon)
             {
-                damage = 100;
+                this.damage = damage;
                 element_type = Element_types.Fire;
                 type = "Monster";
             }
             else if (name == Cardname.FireElf)
             {
-                damage = 60;
+                this.damage = damage;
                 element_type = Element_types.Fire;
                 type = "Monster";
             }
-            else if (name == Cardname.Goblin)
+            else if (name == Cardname.WaterGoblin)
             {
-                damage = 40;
-                element_type = Element_types.Normal;
+                this.damage = damage;
+                element_type = Element_types.Water;
                 type = "Monster";
             }
             else if (name == Cardname.Knight)
             {
-                damage = 80;
+                this.damage = damage;
                 element_type = Element_types.Normal;
                 type = "Monster";
             }
             else if (name == Cardname.Kraken)
             {
-                damage = 60;
+                this.damage = damage;
                 element_type = Element_types.Water;
                 type = "Monster";
             }
             else if (name == Cardname.Ork)
             {
-                damage = 60;
+                this.damage = damage;
                 element_type = Element_types.Normal;
                 type = "Monster";
             }
             else if (name == Cardname.Wizard)
             {
-                damage = 80;
+                this.damage = damage;
                 element_type = Element_types.Water;
                 type = "Monster";
             }

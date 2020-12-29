@@ -41,7 +41,7 @@ namespace MCTG_Project.Test
         {
             ICard card1 = new Dragon();
             ICard card2 = new FireElf();
-            ICard card3 = new Goblin();
+            ICard card3 = new WaterGoblin();
             ICard card4 = new Knight();
             ICard card5 = new Kraken();
             ICard card6 = new Ork();
@@ -68,7 +68,7 @@ namespace MCTG_Project.Test
         public void createAllSpellcards()
         {
             ICard card1 = new FireSpell();
-            ICard card2 = new NormalSpell();
+            ICard card2 = new RegularSpell();
             ICard card3 = new WaterSpell();
 
             Cardname desiredName1 = Cardname.FireSpell;
@@ -84,7 +84,7 @@ namespace MCTG_Project.Test
         public void Dragon_Goblin()
         {
             ICard Dragon = new Dragon();
-            ICard Goblin = new Goblin();
+            ICard Goblin = new WaterGoblin();
 
             int desiredDragonDamage = 100;
             int desiredGoblinDamage = 0;

@@ -6,7 +6,7 @@ namespace MTCG_Project.MTCG.Cards.Monsters
 {
     public class Kraken : AbstractMonstercard
     {
-        public Kraken() : base(Cardname.Kraken) { }
+        public Kraken(int damage) : base(Cardname.Kraken, damage) { }
 
         public override bool SpecialBehavior(ICard otherCard)
         {

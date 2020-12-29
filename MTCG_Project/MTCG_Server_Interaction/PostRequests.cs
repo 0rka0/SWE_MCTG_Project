@@ -26,15 +26,31 @@ namespace MTCG_Project.Interaction
             User tmpUser = JsonConvert.DeserializeObject<User>(request.Message);
             UserDatabaseHandler db = new UserDatabaseHandler();
 
-            db.InsertUser(tmpUser);
+            try
+            {
+                db.InsertUser(tmpUser);
+                Console.WriteLine("User: {0}, wurde erfolgreich erstellt!", tmpUser.username);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         void LoginUser(RequestContext request)
         {
             User tmpUser = JsonConvert.DeserializeObject<User>(request.Message);
             UserDatabaseHandler db = new UserDatabaseHandler();
-            
-            db.CheckUser(tmpUser);
+
+            try
+            {
+                db.LoginUser(tmpUser);
+                Console.WriteLine("User {0} erfolgreich eingeloggt!", tmpUser.username);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

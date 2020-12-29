@@ -35,7 +35,7 @@ namespace MTCG_Project.MTCG.NamespaceStore
                 }
                 else if (rand_num == 3)
                 {
-                    cards[i] = new Goblin();
+                    cards[i] = new WaterGoblin();
                 }
                 else if (rand_num == 4)
                 {
@@ -63,7 +63,7 @@ namespace MTCG_Project.MTCG.NamespaceStore
                 }
                 else if (rand_num == 10)
                 {
-                    cards[i] = new NormalSpell();
+                    cards[i] = new RegularSpell();
                 }
                 else
                 {

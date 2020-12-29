@@ -6,7 +6,7 @@ namespace MTCG_Project.MTCG.Cards
 {    
     public enum Cardname
     {
-        Goblin,
+        WaterGoblin,
         Dragon,
         Wizard,
         Ork,
@@ -15,6 +15,6 @@ namespace MTCG_Project.MTCG.Cards
         FireElf,
         FireSpell,
         WaterSpell,
-        NormalSpell,
+        RegularSpell,
     }
 }
