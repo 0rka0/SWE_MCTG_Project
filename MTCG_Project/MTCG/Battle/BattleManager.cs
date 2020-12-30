@@ -36,7 +36,7 @@ namespace MTCG_Project.MTCG.Battle
 
         User FindOpponent()
         {
-            User tmp_user = new User("Test");
+            User tmp_user = new User();
             tmp_user.GenerateDummy();
             return tmp_user;
         }

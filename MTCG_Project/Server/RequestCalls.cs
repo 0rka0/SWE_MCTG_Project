@@ -7,6 +7,7 @@ namespace MTCG_Project.Server
     public static class RequestCalls
     {
         public const string users = "/users";
+        public const string specific_user = "/users/";
         public const string sessions = "/sessions";
         public const string packages = "/packages";
         public const string transactions = "/transactions";

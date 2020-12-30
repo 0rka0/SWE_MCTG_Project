@@ -17,17 +17,23 @@ namespace MTCG_Project.MTCG.NamespaceUser
         public int gamesPlayed { get; set; }
         public int elo { get;set; }
         public string token { get; set; }
+        public string name { get; set; }
+        public string bio { get; set; }
+        public string image { get; set; }
 
         public Stack stack;
         public Deck deck;
 
-        public User(string name)
+        public User()
         {
             uid = 0;
-            username = name;
+            username = null;
             elo = 100;
             coins = 20;
             token = "Basic " + username + "-mtcgToken";
+            name = null;
+            bio = null;
+            image = null;
             stack = new Stack();
             deck = new Deck();
         }

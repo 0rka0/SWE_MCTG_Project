@@ -115,7 +115,7 @@ namespace MTCG_Project.Interaction
         {
             string username = null;
             string loggedIn = null;
-            Console.WriteLine(token);
+            //Console.WriteLine(token);
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
@@ -128,9 +128,9 @@ namespace MTCG_Project.Interaction
                     loggedIn = reader[1].ToString();
                 }
             conn.Close();
-            
+
             //different user states: admin, logged in user, not logged int
-            if (String.Compare(loggedIn, "0") == 0)
+            if ((String.Compare(loggedIn, "0") == 0) || (String.Compare(loggedIn, null) == 0))
             {
                 return 0;
             }
@@ -148,7 +148,7 @@ namespace MTCG_Project.Interaction
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            string selectString = String.Format("SELECT uid, username, coins, games_played, elo FROM users WHERE token = '{0}'", token);
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, name, bio, image FROM users WHERE token = '{0}'", token);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())
@@ -158,13 +158,16 @@ namespace MTCG_Project.Interaction
                     user.coins = (int)reader[2];
                     user.gamesPlayed = (int)reader[3];
                     user.elo = (int)reader[4];
+                    user.name = reader[5].ToString();
+                    user.bio = reader[6].ToString();
+                    user.image = reader[7].ToString();
                 }
             conn.Close();
 
             return user;
         }
 
-        static public void UpdateUserData(User user)
+        static public void UpdateBaseUserData(User user)
         {
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
@@ -177,6 +180,36 @@ namespace MTCG_Project.Interaction
                 cmd.Parameters.AddWithValue("@uid", user.uid);
                 cmd.ExecuteNonQuery();
             }
+
+            conn.Close();
+        }
+
+        static public void UpdateExtraUserData(User user)
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            if(String.Compare(user.name, null) != 0)
+                using (var cmd = new NpgsqlCommand("UPDATE users SET name = @n WHERE username = @un", conn))
+                {      //adding parameters
+                    cmd.Parameters.AddWithValue("@n", user.name);
+                    cmd.Parameters.AddWithValue("@un", user.username);
+                    cmd.ExecuteNonQuery();
+                }
+            if (String.Compare(user.bio, null) != 0)
+                using (var cmd = new NpgsqlCommand("UPDATE users SET bio = @b WHERE username = @un", conn))
+                {      //adding parameters
+                    cmd.Parameters.AddWithValue("@b", user.bio);
+                    cmd.Parameters.AddWithValue("@un", user.username);
+                    cmd.ExecuteNonQuery();
+                }
+            if (String.Compare(user.image, null) != 0)
+                using (var cmd = new NpgsqlCommand("UPDATE users SET image = @i WHERE username = @un", conn))
+                {      //adding parameters
+                    cmd.Parameters.AddWithValue("@i", user.image);
+                    cmd.Parameters.AddWithValue("@un", user.username);
+                    cmd.ExecuteNonQuery();
+                }
 
             conn.Close();
         }

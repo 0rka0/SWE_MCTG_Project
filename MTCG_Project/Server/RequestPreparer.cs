@@ -87,6 +87,10 @@ namespace MTCG_Project.Server
             {
                 return true;
             }
+            if (ress.Contains(RequestCalls.specific_user))
+            {
+                return true;
+            }
             if (String.Compare(ress, RequestCalls.sessions) == 0)
             {
                 return true;

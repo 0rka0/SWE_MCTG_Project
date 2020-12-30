@@ -13,6 +13,10 @@ namespace MTCG_Project.Interaction
             {
                 UserCardsHandler.ConfigureDeck(request);
             }
+            if (request.Ressource.Contains(RequestCalls.specific_user))
+            {
+                UserHandler.UpdateExtraUserData(request);
+            }
         }
     }
 }

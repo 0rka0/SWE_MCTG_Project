@@ -134,7 +134,6 @@ namespace MTCG_Project.Interaction
             UpdateCards(user, strings);
         }
 
-        //WORK IN PROGRESS HERE
         static void UpdateCards(User user, string[] strings)
         {   //set all cards to false and selected cards true again
             using var conn = new NpgsqlConnection(connString);  //connect to db

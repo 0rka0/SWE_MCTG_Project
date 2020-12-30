@@ -68,7 +68,7 @@ namespace MTCG_Project.MTCG
         {
             Console.WriteLine("Enter your username:");
             loginName = Console.ReadLine();
-            user = new User(loginName);
+            user = new User();
             loggedIn = true;
         }
 

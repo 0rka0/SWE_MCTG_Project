@@ -21,6 +21,14 @@ namespace MTCG_Project.Interaction
             {
                 return UserCardsHandler.ShowDeck(request, false);
             }
+            if (request.Ressource.Contains(RequestCalls.specific_user))
+            {
+                return UserHandler.ShowUserData(request);
+            }
+            if (String.Compare(request.Ressource, RequestCalls.stats) == 0)
+            {
+                return UserHandler.ShowStats(request);
+            }
             return "Kein passender Befehl!";
         }
     }
