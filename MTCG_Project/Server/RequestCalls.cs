@@ -13,6 +13,7 @@ namespace MTCG_Project.Server
         public const string trans_packs = "/transactions/packages";
         public const string cards = "/cards";
         public const string deck = "/deck";
+        public const string deck_plain = "/deck?format=plain";
         public const string stats = "/stats";
         public const string score = "/score";
         public const string battles = "/battles";

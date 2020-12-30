@@ -51,7 +51,38 @@ namespace MTCG_Project.Interaction
             return str;
         }
 
-        public static string GetDeckByUser(User user)
+        public static string GetDeckByUser(User user, bool format)
+        {
+            if (format)
+                return GDBUplain(user);
+            return GDBUjson(user);
+        }
+
+        static string GDBUjson(User user)
+        {
+            string str = "[";
+            bool deckEmpty = true;
+            using var conn = new NpgsqlConnection(connString);  //connect to db
+            conn.Open();
+
+            string selectString = String.Format("SELECT id, cardname, damage FROM cards_users WHERE userid = {0} AND in_deck = true", user.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    deckEmpty = false;
+                    str += "{\\\"Id\\\":\\\"" + reader[0].ToString() + "\\\", ";
+                    str += "\\\"Name\\\":\\\"" + reader[1].ToString() + "\\\", ";
+                    str += "\\\"Damage\\\": " + reader[2].ToString() + "}, ";
+                }
+            str = str.Trim(',', ' ');
+            conn.Close();
+            if (deckEmpty)
+                return "[]";
+            return str += "]";
+        }
+
+        static string GDBUplain(User user)
         {
             string str = String.Format("Deck of {0}:\n", user.username);
             bool deckEmpty = true;
@@ -68,7 +99,6 @@ namespace MTCG_Project.Interaction
                     str += "Name: " + reader[1].ToString() + "\n";
                     str += " Damage: " + reader[2].ToString() + "\n";
                 }
-            //Console.WriteLine(str);
             conn.Close();
             if (deckEmpty)
                 return "Deck still empty!";
@@ -81,9 +111,9 @@ namespace MTCG_Project.Interaction
             using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
             
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < strings.Length; i++)
             {
-                string selectString = String.Format("SELECT * FROM cards_users WHERE id = '{0}' AND in_deck = false AND userid = {1}", strings[i], user.uid);
+                string selectString = String.Format("SELECT * FROM cards_users WHERE id = '{0}' AND userid = {1}", strings[i], user.uid);
                 using (var cmd = new NpgsqlCommand(selectString, conn))
                 using (var reader = cmd.ExecuteReader())
                     if(reader.Read())
@@ -92,18 +122,18 @@ namespace MTCG_Project.Interaction
                     }
             }
 
-            if (counter < 4)
+            if (counter != 4)
             {
-                Console.WriteLine("Error");
+                Console.WriteLine("Es wurden keine passenden vier Karten ausgewählt!\n");
                 return;
             }
 
             conn.Close();
-            AddToDeck(user, strings);
+            UpdateCards(user, strings);
         }
 
         //WORK IN PROGRESS HERE
-        static void AddToDeck(User user, string[] strings)
+        static void UpdateCards(User user, string[] strings)
         {   //set all cards to false and selected cards true again
             using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
@@ -113,16 +143,20 @@ namespace MTCG_Project.Interaction
                 cmd.ExecuteNonQuery();
             }
 
+            string updateString = "";
             foreach (string s in strings)
             {
-                using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_deck = true WHERE userid = @uid AND id = '@id'", conn))        //inserting into db
+                updateString = String.Format("UPDATE cards_users SET in_deck = true WHERE userid = {0} AND id = '{1}'", user.uid, s);
+                using (var cmd = new NpgsqlCommand(updateString, conn))        //inserting into db
                 {      //adding parameters
-                    cmd.Parameters.AddWithValue("@uid", user.uid);
-                    cmd.Parameters.AddWithValue("@id", s);
+                    //cmd.Parameters.AddWithValue("@uid", user.uid);
+                    //cmd.Parameters.AddWithValue("@id", s);    //Problem with adding s as param --> solved by predefining string
                     cmd.ExecuteNonQuery();
                 }
             }
             conn.Close();
+
+            Console.WriteLine("Deck wurde erfolgreich aktualisiert!\n");
         }
     }
 }

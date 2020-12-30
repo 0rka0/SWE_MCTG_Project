@@ -13,9 +13,13 @@ namespace MTCG_Project.Interaction
             {
                 return UserCardsHandler.ShowStack(request);
             }
+            if (String.Compare(request.Ressource, RequestCalls.deck_plain) == 0)
+            {
+                return UserCardsHandler.ShowDeck(request, true);
+            }
             if (String.Compare(request.Ressource, RequestCalls.deck) == 0)
             {
-                return UserCardsHandler.ShowDeck(request);
+                return UserCardsHandler.ShowDeck(request, false);
             }
             return "Kein passender Befehl!";
         }

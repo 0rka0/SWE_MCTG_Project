@@ -24,14 +24,14 @@ namespace MTCG_Project.Interaction
             return "Nicht eingeloggt!";
         }
 
-        public static string ShowDeck(RequestContext request)
+        public static string ShowDeck(RequestContext request, bool format)
         {
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
             {
                 User user = UserHandler.GetUserData(request);
 
-                return CardsUsersDatabaseHandler.GetDeckByUser(user);
+                return CardsUsersDatabaseHandler.GetDeckByUser(user, format);
             }
 
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
@@ -43,8 +43,6 @@ namespace MTCG_Project.Interaction
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
             {
-                int counter = 0;
-                string[] cards = new string[5];
                 string[] strings = PrepareStrings(request.Message);
                 User user = UserHandler.GetUserData(request);
 

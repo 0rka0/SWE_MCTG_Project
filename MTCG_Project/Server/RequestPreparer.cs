@@ -44,6 +44,7 @@ namespace MTCG_Project.Server
                 return;
             }
 
+
             RequestHandler requestHandler = new RequestHandler();
             requestHandler.HandleRequestByVerb(Reader, Writer, request, ressourceElements, messageList);
         }
@@ -107,6 +108,10 @@ namespace MTCG_Project.Server
                 return true;
             }
             if (String.Compare(ress, RequestCalls.deck) == 0)
+            {
+                return true;
+            }
+            if (String.Compare(ress, RequestCalls.deck_plain) == 0)
             {
                 return true;
             }
