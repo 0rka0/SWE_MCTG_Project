@@ -4,6 +4,7 @@ using System.Text;
 using MTCG_Project.MTCG.Cards;
 using MTCG_Project.MTCG.NamespaceUser;
 using Npgsql;
+using Newtonsoft.Json;
 
 namespace MTCG_Project.Interaction
 {
@@ -45,7 +46,6 @@ namespace MTCG_Project.Interaction
                     str += "Name: " + reader[1].ToString() + "\n";
                     str += " Damage: " + reader[2].ToString() + "\n";
                 }
-
             //Console.WriteLine(str);
             conn.Close();
             return str;
@@ -60,9 +60,10 @@ namespace MTCG_Project.Interaction
 
         static string GDBUjson(User user)
         {
-            string str = "[";
+            string jsonStr = "";
             bool deckEmpty = true;
             using var conn = new NpgsqlConnection(connString);  //connect to db
+            DummyCard card = new DummyCard();
             conn.Open();
 
             string selectString = String.Format("SELECT id, cardname, damage FROM cards_users WHERE userid = {0} AND in_deck = true", user.uid);
@@ -71,15 +72,16 @@ namespace MTCG_Project.Interaction
                 while (reader.Read())
                 {
                     deckEmpty = false;
-                    str += "{\\\"Id\\\":\\\"" + reader[0].ToString() + "\\\", ";
-                    str += "\\\"Name\\\":\\\"" + reader[1].ToString() + "\\\", ";
-                    str += "\\\"Damage\\\": " + reader[2].ToString() + "}, ";
+                    card.id = reader[0].ToString();
+                    card.name = reader[1].ToString();
+                    card.damage = (float)((double)reader[2]);
+                    jsonStr += JsonConvert.SerializeObject(card);
                 }
-            str = str.Trim(',', ' ');
+
             conn.Close();
             if (deckEmpty)
-                return "[]";
-            return str += "]";
+                return "{}";
+            return jsonStr;
         }
 
         static string GDBUplain(User user)
