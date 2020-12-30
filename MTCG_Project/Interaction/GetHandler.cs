@@ -23,11 +23,15 @@ namespace MTCG_Project.Interaction
             }
             if (request.Ressource.Contains(RequestCalls.specific_user))
             {
-                return UserHandler.ShowUserData(request);
+                return UserHandler.ShowPersonalUserData(request);
             }
             if (String.Compare(request.Ressource, RequestCalls.stats) == 0)
             {
-                return UserHandler.ShowStats(request);
+                return UserHandler.ShowPersonalStats(request);
+            }
+            if (String.Compare(request.Ressource, RequestCalls.score) == 0)
+            {
+                return UserHandler.ShowScoreboard(request);
             }
             return "Kein passender Befehl!";
         }

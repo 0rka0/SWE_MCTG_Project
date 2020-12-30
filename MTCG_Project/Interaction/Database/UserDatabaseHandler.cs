@@ -30,7 +30,7 @@ namespace MTCG_Project.Interaction
             string token = String.Format("Basic {0}-mtcgToken", user.username);
             try
             {
-                using (var cmd = new NpgsqlCommand("INSERT INTO users VALUES (@id, @un, @pw, @c, @gp, @elo, @token)", conn))        //inserting into db
+                using (var cmd = new NpgsqlCommand("INSERT INTO users VALUES (@id, @un, @pw, @c, @gp, @elo, @w, @token)", conn))        //inserting into db
                 {
                     cmd.Parameters.AddWithValue("@id", maxId + 1);      //adding parameters
                     cmd.Parameters.AddWithValue("@un", user.username);
@@ -38,6 +38,7 @@ namespace MTCG_Project.Interaction
                     cmd.Parameters.AddWithValue("@c", user.coins);
                     cmd.Parameters.AddWithValue("@gp", user.gamesPlayed);
                     cmd.Parameters.AddWithValue("@elo", user.elo);
+                    cmd.Parameters.AddWithValue("@w", user.wins);
                     cmd.Parameters.AddWithValue("@token", token);
                     cmd.ExecuteNonQuery();
                 }
@@ -148,7 +149,7 @@ namespace MTCG_Project.Interaction
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, name, bio, image FROM users WHERE token = '{0}'", token);
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image FROM users WHERE token = '{0}'", token);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())
@@ -158,25 +159,24 @@ namespace MTCG_Project.Interaction
                     user.coins = (int)reader[2];
                     user.gamesPlayed = (int)reader[3];
                     user.elo = (int)reader[4];
-                    user.name = reader[5].ToString();
-                    user.bio = reader[6].ToString();
-                    user.image = reader[7].ToString();
+                    user.wins = (int)reader[5];
+                    user.name = reader[6].ToString();
+                    user.bio = reader[7].ToString();
+                    user.image = reader[8].ToString();
                 }
             conn.Close();
 
             return user;
         }
 
-        static public void UpdateBaseUserData(User user)
+        static public void UpdateCoins(User user)
         {
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            using (var cmd = new NpgsqlCommand("UPDATE users SET coins = @coins, games_played = @gp, elo = @elo WHERE uid = @uid", conn))
+            using (var cmd = new NpgsqlCommand("UPDATE users SET coins = @coins WHERE uid = @uid", conn))
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@coins", user.coins);
-                cmd.Parameters.AddWithValue("@gp", user.gamesPlayed);
-                cmd.Parameters.AddWithValue("@elo", user.elo);
                 cmd.Parameters.AddWithValue("@uid", user.uid);
                 cmd.ExecuteNonQuery();
             }
@@ -212,6 +212,26 @@ namespace MTCG_Project.Interaction
                 }
 
             conn.Close();
+        }
+
+        static public string GenerateScoreboard()
+        {
+            string str = "";
+            int counter = 1;
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            using (var cmd = new NpgsqlCommand("SELECT username, elo, games_played, wins FROM users ORDER BY elo desc, wins desc", conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    str += String.Format("{0}. Username: {1} | Elo: {2} | Games: {3} | Wins: {4}\n", 
+                        counter, reader[0].ToString(), reader[1].ToString(), reader[2].ToString(), reader[3].ToString());
+                    counter++;
+                }
+            
+            conn.Close();
+            return str;
         }
     }
 }

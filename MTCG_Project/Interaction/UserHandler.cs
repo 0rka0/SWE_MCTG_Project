@@ -37,7 +37,7 @@ namespace MTCG_Project.Interaction
             }
         }
 
-        static public string ShowUserData(RequestContext request)
+        static public string ShowPersonalUserData(RequestContext request)
         {
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)     //eingeloggt
@@ -45,10 +45,38 @@ namespace MTCG_Project.Interaction
                 if(AccessUserdata(request))
                 {
                     User user = GetUserData(request);
-                    return String.Format("ID: {0}\nUsername: {1}\nCoins: {2}\nGames played: {3}\nElo: {4}\nName: {5}\nBio: {6}\nImage: {7}\n", 
-                        user.uid, user.username, user.coins, user.gamesPlayed, user.elo, user.name, user.bio, user.image);
+                    return String.Format("ID: {0}\nUsername: {1}\nCoins: {2}\nName: {3}\nBio: {4}\nImage: {5}\n", 
+                        user.uid, user.username, user.coins, user.name, user.bio, user.image);
                 }
-                return "Man kann nicht die Daten von anderen Usern verändern!";
+                return "Man kann nicht die persönlichen Daten von anderen Usern nicht sehen!";
+            }
+            return "Nicht eingeloggt!";
+        }
+
+        static public string ShowPersonalStats(RequestContext request)
+        {
+            float winrate;
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)     //eingeloggt
+            {                
+                User user = GetUserData(request);
+                if (user.gamesPlayed == 0)
+                    winrate = 0;
+                else
+                    winrate = user.wins / user.gamesPlayed * 100;
+
+                return String.Format("Username: {0}\nElo: {1}\nGames played: {2}\nWins: {3}\nWinrate: {4}%\n",
+                    user.username, user.elo, user.gamesPlayed, user.wins, winrate);                
+            }
+            return "Nicht eingeloggt!";
+        }
+
+        static public string ShowScoreboard(RequestContext request)
+        {
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)     //eingeloggt
+            {
+                return UserDatabaseHandler.GenerateScoreboard();
             }
             return "Nicht eingeloggt!";
         }
@@ -94,7 +122,7 @@ namespace MTCG_Project.Interaction
 
         static public void UpdateBaseUserData(User user)
         {
-            UserDatabaseHandler.UpdateBaseUserData(user);
+            UserDatabaseHandler.UpdateCoins(user);
         }
 
         static string GetToken(RequestContext request)

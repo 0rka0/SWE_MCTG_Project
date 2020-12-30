@@ -15,6 +15,7 @@ namespace MTCG_Project.MTCG.NamespaceUser
         public string password { get; set; }
         public int coins { get; set; }
         public int gamesPlayed { get; set; }
+        public int wins { get; set; }
         public int elo { get;set; }
         public string token { get; set; }
         public string name { get; set; }
@@ -30,6 +31,8 @@ namespace MTCG_Project.MTCG.NamespaceUser
             username = null;
             elo = 100;
             coins = 20;
+            gamesPlayed = 0;
+            wins = 0;
             token = "Basic " + username + "-mtcgToken";
             name = null;
             bio = null;
