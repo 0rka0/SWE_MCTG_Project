@@ -19,5 +19,6 @@ namespace MTCG_Project.Server
         public const string score = "/score";
         public const string battles = "/battles";
         public const string tradings = "/tradings";
+        public const string specific_trade = "/tradings/";
     }
 }

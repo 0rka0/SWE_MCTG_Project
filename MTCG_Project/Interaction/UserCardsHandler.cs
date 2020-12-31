@@ -78,5 +78,10 @@ namespace MTCG_Project.Interaction
             }
             return finishedStrings;
         }
+
+        static public bool CheckValidCardToUser(string cardId, User user)
+        {
+            return CardsUsersDatabaseHandler.CheckValidCard(cardId, user);
+        }
     }
 }

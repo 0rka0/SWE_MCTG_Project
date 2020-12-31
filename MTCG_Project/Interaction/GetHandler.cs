@@ -33,6 +33,10 @@ namespace MTCG_Project.Interaction
             {
                 return UserHandler.ShowScoreboard(request);
             }
+            if (String.Compare(request.Ressource, RequestCalls.tradings) == 0)
+            {
+                return TradingHandler.ShowTradeDeals(request);
+            }
             return "Kein passender Befehl!";
         }
     }

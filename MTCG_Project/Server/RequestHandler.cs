@@ -27,7 +27,7 @@ namespace MTCG_Project.Server
             }
             else if (String.Compare(request.Verb, HttpData.Delete) == 0)
             {
-                HandleDelete(ressourceElements, messageList);
+                HandleDelete(request, ressourceElements, messageList);
             }
             else
             {
@@ -66,10 +66,10 @@ namespace MTCG_Project.Server
             //messageList.Insert(position - 1, request);
         }
 
-        void HandleDelete(string[] ressourceElements, List<RequestContext> messageList)
+        void HandleDelete(RequestContext request, string[] ressourceElements, List<RequestContext> messageList)
         {
-            messageList.Clear();
-            ResponseHandler.Status201(Writer);
+            string tmpString = DeleteHandler.HandleByCommand(request);
+            ResponseHandler.Status200(Writer, tmpString);
         }
 
         string ReadContent()

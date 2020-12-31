@@ -7,17 +7,16 @@
 
   <ItemGroup>
     <Compile Remove="Interaction\GetRequests\**" />
+    <Compile Remove="MTCG\Store\**" />
     <EmbeddedResource Remove="Interaction\GetRequests\**" />
+    <EmbeddedResource Remove="MTCG\Store\**" />
     <None Remove="Interaction\GetRequests\**" />
+    <None Remove="MTCG\Store\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Npgsql" Version="5.0.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MTCG\Store\" />
   </ItemGroup>
 
 </Project>

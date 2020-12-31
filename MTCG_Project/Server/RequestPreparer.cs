@@ -135,6 +135,10 @@ namespace MTCG_Project.Server
             {
                 return true;
             }
+            if(ress.Contains(RequestCalls.specific_trade))
+            {
+                return true;
+            }
             ResponseHandler.Status400(Writer);
             return false;
         }

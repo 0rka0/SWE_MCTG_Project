@@ -189,5 +189,43 @@ namespace MTCG_Project.Interaction
             conn.Close();
             return deck;
         }
+
+        static public DummyCard GetDummyCard(User user, string cardId)
+        {
+            DummyCard card = new DummyCard();
+            int counter = 0;
+            using var conn = new NpgsqlConnection(connString);  //connect to db
+            conn.Open();
+
+            string selectString = String.Format("SELECT id, cardname, damage FROM cards_users WHERE userid = {0} AND in_deck = true", user.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    card.id = reader[0].ToString();
+                    card.name = reader[1].ToString();
+                    card.damage = (float)((double)reader[2]);
+                    counter++;
+                }
+
+            conn.Close();
+            return card;
+        }
+
+        static public bool CheckValidCard(string cardId, User user)
+        {
+            bool result = false;
+            using var conn = new NpgsqlConnection(connString);  //connect to db
+            conn.Open();
+
+            string selectString = String.Format("SELECT * FROM cards_users WHERE userid = {0} AND id = '{1}' AND in_deck = false", user.uid, cardId);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                if (reader.Read())
+                    result = true;
+
+            conn.Close();
+            return result;
+        }
     }
 }
