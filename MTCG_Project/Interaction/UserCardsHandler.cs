@@ -4,13 +4,12 @@ using System.Text;
 using MTCG_Project.Server;
 using MTCG_Project.MTCG.NamespaceUser;
 using MTCG_Project.MTCG.Cards;
-using Newtonsoft.Json;
 
 namespace MTCG_Project.Interaction
 {
-    public static class UserCardsHandler
+    static public class UserCardsHandler
     {
-        public static string ShowStack(RequestContext request)
+        static public string ShowStack(RequestContext request)
         {
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
@@ -24,7 +23,7 @@ namespace MTCG_Project.Interaction
             return "Nicht eingeloggt!";
         }
 
-        public static string ShowDeck(RequestContext request, bool format)
+        static public string ShowDeck(RequestContext request, bool format)
         {
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
@@ -38,7 +37,7 @@ namespace MTCG_Project.Interaction
             return "Nicht eingeloggt!";
         }
 
-        public static void ConfigureDeck(RequestContext request)
+        static public void ConfigureDeck(RequestContext request)
         {
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
@@ -51,6 +50,19 @@ namespace MTCG_Project.Interaction
             }
 
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+        }
+
+        public static BattleDeck GenerateBattleDeck(User user)
+        {
+            DummyCard[] dummyDeck = CardsUsersDatabaseHandler.GetDummyDeck(user);
+            BattleDeck deck = new BattleDeck();
+
+            foreach (DummyCard card in dummyDeck)
+            {
+                deck.AddCard(DummyCardConverter.Convert(card));
+            }
+
+            return deck;
         }
 
         static string[] PrepareStrings(string inputString)

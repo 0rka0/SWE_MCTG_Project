@@ -1,6 +1,5 @@
 ﻿using MTCG_Project.MTCG;
 using MTCG_Project.MTCG.NamespaceUser;
-using MTCG_Project.MTCG.NamespaceStore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,9 +20,9 @@ namespace MTCG_Project.MTCG.NamespaceUser
         public string name { get; set; }
         public string bio { get; set; }
         public string image { get; set; }
+        public bool deck_set { get; set; }
 
-        public Stack stack;
-        public Deck deck;
+        public BattleDeck deck;
 
         public User()
         {
@@ -37,24 +36,8 @@ namespace MTCG_Project.MTCG.NamespaceUser
             name = null;
             bio = null;
             image = null;
-            stack = new Stack();
-            deck = new Deck();
-        }
-
-        public void GetPack(Pack pack)
-        {
-            coins -= 5;
-            for (int i = 0; i < 5; i++)
-            {
-                stack.AddCard(pack.cards[i]);
-            }
-            deck.UpdateDeck(stack);
-        }
-
-        public void GenerateDummy()
-        {
-            Pack pack = new Pack();
-            GetPack(pack);
+            deck_set = false;
+            deck = null;
         }
     }
 }

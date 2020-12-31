@@ -23,7 +23,7 @@ namespace MCTG_Project.Test
             ICard card1;
 
             //Act
-            card1 = new Dragon();
+            card1 = new Dragon(100);
             Cardname desiredName = Cardname.Dragon;
             int desiredDamage = 100;
             Element_types desiredElement = Element_types.Fire;
@@ -39,17 +39,17 @@ namespace MCTG_Project.Test
         [Test]
         public void createAllMonstercards()
         {
-            ICard card1 = new Dragon();
-            ICard card2 = new FireElf();
-            ICard card3 = new WaterGoblin();
-            ICard card4 = new Knight();
-            ICard card5 = new Kraken();
-            ICard card6 = new Ork();
-            ICard card7 = new Wizard();
+            ICard card1 = new Dragon(100);
+            ICard card2 = new FireElf(60);
+            ICard card3 = new WaterGoblin(40);
+            ICard card4 = new Knight(80);
+            ICard card5 = new Kraken(80);
+            ICard card6 = new Ork(70);
+            ICard card7 = new Wizard(90);
 
             Cardname desiredName1 = Cardname.Dragon;
             Cardname desiredName2 = Cardname.FireElf;
-            Cardname desiredName3 = Cardname.Goblin;
+            Cardname desiredName3 = Cardname.WaterGoblin;
             Cardname desiredName4 = Cardname.Knight;
             Cardname desiredName5 = Cardname.Kraken;
             Cardname desiredName6 = Cardname.Ork;
@@ -67,12 +67,12 @@ namespace MCTG_Project.Test
         [Test]
         public void createAllSpellcards()
         {
-            ICard card1 = new FireSpell();
-            ICard card2 = new RegularSpell();
-            ICard card3 = new WaterSpell();
+            ICard card1 = new FireSpell(100);
+            ICard card2 = new RegularSpell(100);
+            ICard card3 = new WaterSpell(100);
 
             Cardname desiredName1 = Cardname.FireSpell;
-            Cardname desiredName2 = Cardname.NormalSpell;
+            Cardname desiredName2 = Cardname.RegularSpell;
             Cardname desiredName3 = Cardname.WaterSpell;
 
             Assert.AreEqual(desiredName1, card1.name);
@@ -83,14 +83,14 @@ namespace MCTG_Project.Test
         [Test]
         public void Dragon_Goblin()
         {
-            ICard Dragon = new Dragon();
-            ICard Goblin = new WaterGoblin();
+            ICard Dragon = new Dragon(100);
+            ICard Goblin = new WaterGoblin(40);
 
-            int desiredDragonDamage = 100;
-            int desiredGoblinDamage = 0;
+            float desiredDragonDamage = 100;
+            float desiredGoblinDamage = 0;
 
-            int actualDragonDamage = Dragon.CombatBehavior(Goblin);
-            int actualGoblinDamage = Goblin.CombatBehavior(Dragon);
+            float actualDragonDamage = Dragon.CombatBehavior(Goblin);
+            float actualGoblinDamage = Goblin.CombatBehavior(Dragon);
 
             Assert.AreEqual(desiredDragonDamage, actualDragonDamage);
             Assert.AreEqual(desiredGoblinDamage, actualGoblinDamage);

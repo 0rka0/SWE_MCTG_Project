@@ -150,7 +150,7 @@ namespace MTCG_Project.Interaction
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image FROM users WHERE token = '{0}'", token);
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image, deck_set FROM users WHERE token = '{0}'", token);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())
@@ -164,6 +164,7 @@ namespace MTCG_Project.Interaction
                     user.name = reader[6].ToString();
                     user.bio = reader[7].ToString();
                     user.image = reader[8].ToString();
+                    user.deck_set = (bool)reader[9];
                 }
             conn.Close();
 
@@ -176,7 +177,7 @@ namespace MTCG_Project.Interaction
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image FROM users WHERE uid = {0}", id);
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image, deck_set FROM users WHERE uid = {0}", id);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())
@@ -190,6 +191,7 @@ namespace MTCG_Project.Interaction
                     user.name = reader[6].ToString();
                     user.bio = reader[7].ToString();
                     user.image = reader[8].ToString();
+                    user.deck_set = (bool)reader[9];
                 }
             conn.Close();
 
@@ -241,10 +243,28 @@ namespace MTCG_Project.Interaction
             conn.Close();
         }
 
+        static public void UpdateAfterBattle(User user)
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            using (var cmd = new NpgsqlCommand("UPDATE users SET games_played = @gp, elo = @elo, wins = @wins WHERE username = @un", conn))
+            {      //adding parameters
+                cmd.Parameters.AddWithValue("@gp", user.gamesPlayed);
+                cmd.Parameters.AddWithValue("@elo", user.elo);
+                cmd.Parameters.AddWithValue("@wins", user.wins);
+                cmd.Parameters.AddWithValue("@un", user.username);
+                cmd.ExecuteNonQuery();
+            }
+
+            conn.Close();
+        }
+
         static public string GenerateScoreboard()
         {
             string str = "";
             int counter = 1;
+            float winrate;
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
@@ -252,8 +272,11 @@ namespace MTCG_Project.Interaction
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())
                 {
-                    str += String.Format("{0}. Username: {1} | Elo: {2} | Games: {3} | Wins: {4}\n", 
-                        counter, reader[0].ToString(), reader[1].ToString(), reader[2].ToString(), reader[3].ToString());
+                    winrate = 0;
+                    if ((int)reader[2] != 0)
+                        winrate = (float)((int)reader[3]) / (float)((int)reader[2]) * 100;
+                    str += String.Format("{0}. Username: {1} | Elo: {2} | Games: {3} | Wins: {4} | Winrate: {5}%\n", 
+                        counter, reader[0].ToString(), reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), winrate.ToString("n2"));
                     counter++;
                 }
             

@@ -63,10 +63,10 @@ namespace MTCG_Project.Interaction
                 if (user.gamesPlayed == 0)
                     winrate = 0;
                 else
-                    winrate = user.wins / user.gamesPlayed * 100;
+                    winrate = (float)user.wins / (float)user.gamesPlayed * 100;
 
                 return String.Format("Username: {0}\nElo: {1}\nGames played: {2}\nWins: {3}\nWinrate: {4}%\n",
-                    user.username, user.elo, user.gamesPlayed, user.wins, winrate);                
+                    user.username, user.elo, user.gamesPlayed, user.wins, winrate.ToString("n2"));                
             }
             return "Nicht eingeloggt!";
         }
@@ -129,6 +129,12 @@ namespace MTCG_Project.Interaction
         static public void UpdateCoins(User user)
         {
             UserDatabaseHandler.UpdateCoins(user);
+        }
+
+        static public void UpdateAfterBattle(User user1, User user2)
+        {
+            UserDatabaseHandler.UpdateAfterBattle(user1);
+            UserDatabaseHandler.UpdateAfterBattle(user2);
         }
 
         static public string GetToken(RequestContext request)

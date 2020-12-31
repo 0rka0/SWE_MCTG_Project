@@ -115,7 +115,7 @@ namespace MTCG_Project.Interaction
             
             for (int i = 0; i < strings.Length; i++)
             {
-                string selectString = String.Format("SELECT * FROM cards_users WHERE id = '{0}' AND userid = {1}", strings[i], user.uid);
+                string selectString = String.Format("SELECT * FROM cards_users WHERE id = '{0}' AND userid = {1} AND in_shop = false", strings[i], user.uid);
                 using (var cmd = new NpgsqlCommand(selectString, conn))
                 using (var reader = cmd.ExecuteReader())
                     if(reader.Read())
@@ -164,6 +164,30 @@ namespace MTCG_Project.Interaction
             conn.Close();
 
             Console.WriteLine("Deck wurde erfolgreich aktualisiert!\n");
+        }
+
+        static public DummyCard[] GetDummyDeck(User user)
+        {
+            DummyCard[] deck = new DummyCard[4];
+            for (int i = 0; i < 4; i++)
+                deck[i] = new DummyCard();
+            int counter = 0;
+            using var conn = new NpgsqlConnection(connString);  //connect to db
+            conn.Open();
+
+            string selectString = String.Format("SELECT id, cardname, damage FROM cards_users WHERE userid = {0} AND in_deck = true", user.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    deck[counter].id = reader[0].ToString();
+                    deck[counter].name = reader[1].ToString();
+                    deck[counter].damage = (float)((double)reader[2]);
+                    counter++;
+                }
+
+            conn.Close();
+            return deck;
         }
     }
 }

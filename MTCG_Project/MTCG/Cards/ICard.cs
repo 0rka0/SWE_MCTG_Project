@@ -6,7 +6,6 @@ namespace MTCG_Project.MTCG.Cards
 {
     public interface ICard
     {
-        string id { get; set; }
         Cardname name { get; set; }
         float damage { get; set; }
         Element_types element_type { get; set; }

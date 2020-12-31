@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using MTCG_Project.Server;
 using MTCG_Project.MTCG.NamespaceUser;
+using MTCG_Project.MTCG.Battle;
 
 namespace MTCG_Project.Interaction
 {
@@ -14,15 +15,22 @@ namespace MTCG_Project.Interaction
             if (userstate == 1 || userstate == 2)     //eingeloggt
             {
                 User user = UserHandler.GetUserDataByToken(request);
-                try
+                if (user.deck_set)
                 {
-                    User opp = FindOpponent(user);
-                    Console.WriteLine(opp.username);
+                    try
+                    {
+                        User opp = FindOpponent(user);
+                        BattleManager battle = new BattleManager(user, opp);
+                        battle.PrepareDecks();
+                        battle.StartBattle();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    return;
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                Console.WriteLine("Es muss zuerst ein Deck definiert werden!\n");
                 return;
             }
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
