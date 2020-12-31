@@ -144,8 +144,9 @@ namespace MTCG_Project.Interaction
             return 1;
         }
 
-        static public User GetUserData(string token, User user)
+        static public User GetUserData(string token)
         {
+            User user = new User();
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
@@ -233,5 +234,10 @@ namespace MTCG_Project.Interaction
             conn.Close();
             return str;
         }
+
+        /*static public User[] SearchOpponents(User user)
+        {
+            return;
+        }*/
     }
 }

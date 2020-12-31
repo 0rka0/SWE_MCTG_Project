@@ -5,9 +5,9 @@ using MTCG_Project.Server;
 
 namespace MTCG_Project.Interaction
 {
-    public static class GetHandler
+    static public class GetHandler
     {
-        public static string HandleByCommand(RequestContext request)
+        static public string HandleByCommand(RequestContext request)
         {
             if (String.Compare(request.Ressource, RequestCalls.cards) == 0)
             {

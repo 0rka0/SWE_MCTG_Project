@@ -62,7 +62,7 @@ namespace MTCG_Project.Interaction
                 {
                     CardsPacksDatabaseHandler.AcquirePackage(user);
                     user.coins -= 5;
-                    UserHandler.UpdateBaseUserData(user);
+                    UserHandler.UpdateCoins(user);
                     Console.WriteLine("Package wurde erfolgreich gekauft!\n");
                 }
                 catch (Exception e)

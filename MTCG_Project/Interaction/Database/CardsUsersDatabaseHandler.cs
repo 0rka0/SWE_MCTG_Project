@@ -138,7 +138,7 @@ namespace MTCG_Project.Interaction
         {   //set all cards to false and selected cards true again
             using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
-            using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_deck = false WHERE userid = @uid", conn))        //inserting into db
+            using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_deck = false WHERE userid = @uid", conn))       
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@uid", user.uid);
                 cmd.ExecuteNonQuery();
@@ -154,6 +154,12 @@ namespace MTCG_Project.Interaction
                     //cmd.Parameters.AddWithValue("@id", s);    //Problem with adding s as param --> solved by predefining string
                     cmd.ExecuteNonQuery();
                 }
+            }
+
+            using (var cmd = new NpgsqlCommand("UPDATE users SET deck_set = true WHERE uid = @uid", conn))       
+            {      //adding parameters
+                cmd.Parameters.AddWithValue("@uid", user.uid);
+                cmd.ExecuteNonQuery();
             }
             conn.Close();
 

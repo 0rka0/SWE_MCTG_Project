@@ -114,18 +114,17 @@ namespace MTCG_Project.Interaction
         {
             string token = GetToken(request);
 
-            User user = new User();
-            user = UserDatabaseHandler.GetUserData(token, user);
+            User user = UserDatabaseHandler.GetUserData(token);
 
             return user;
         }
 
-        static public void UpdateBaseUserData(User user)
+        static public void UpdateCoins(User user)
         {
             UserDatabaseHandler.UpdateCoins(user);
         }
 
-        static string GetToken(RequestContext request)
+        static public string GetToken(RequestContext request)
         {
             if(request.HeaderData.ContainsKey("Authorization"))
                 return request.HeaderData["Authorization"];

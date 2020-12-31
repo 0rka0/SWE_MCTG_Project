@@ -5,9 +5,9 @@ using MTCG_Project.Server;
 
 namespace MTCG_Project.Interaction
 {
-    public static class PostHandler
+    static public class PostHandler
     {
-        public static void HandleByCommand(RequestContext request)
+        static public void HandleByCommand(RequestContext request)
         {
             if(String.Compare(request.Ressource, RequestCalls.users) == 0)
             {
@@ -24,6 +24,10 @@ namespace MTCG_Project.Interaction
             if(String.Compare(request.Ressource, RequestCalls.trans_packs) == 0)
             {
                 PackageHandler.AcquirePackage(request);
+            }
+            if(String.Compare(request.Ressource, RequestCalls.battles) == 0)
+            {
+                Matchmaker.MatchmadeBattleRequest(request);
             }
         }
     }
