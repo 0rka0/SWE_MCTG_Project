@@ -144,13 +144,39 @@ namespace MTCG_Project.Interaction
             return 1;
         }
 
-        static public User GetUserData(string token)
+        static public User GetUserDataByToken(string token)
         {
             User user = new User();
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
             string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image FROM users WHERE token = '{0}'", token);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    user.uid = (int)reader[0];
+                    user.username = reader[1].ToString();
+                    user.coins = (int)reader[2];
+                    user.gamesPlayed = (int)reader[3];
+                    user.elo = (int)reader[4];
+                    user.wins = (int)reader[5];
+                    user.name = reader[6].ToString();
+                    user.bio = reader[7].ToString();
+                    user.image = reader[8].ToString();
+                }
+            conn.Close();
+
+            return user;
+        }
+
+        static public User GetUserDataById(int id)
+        {
+            User user = new User();
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image FROM users WHERE uid = {0}", id);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())
@@ -235,9 +261,38 @@ namespace MTCG_Project.Interaction
             return str;
         }
 
-        /*static public User[] SearchOpponents(User user)
+        static public List<int> SearchOpponentsWithElo(User user)
         {
-            return;
-        }*/
+            List<int> ids = new List<int>();
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            string selectString = String.Format("SELECT uid FROM users WHERE elo >= ({0} - 50) AND elo <= ({1} + 50) AND deck_set = true AND uid != {2}", user.elo, user.elo, user.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    ids.Add((int)reader[0]);
+                }
+            conn.Close();
+            return ids;
+        }
+
+        static public List<int> SearchOpponentsWithoutElo(User user)
+        {
+            List<int> ids = new List<int>();
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            string selectString = String.Format("SELECT uid FROM users WHERE deck_set = true AND uid != {0}", user.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
+                {
+                    ids.Add((int)reader[0]);
+                }
+            conn.Close();
+            return ids;
+        }
     }
 }

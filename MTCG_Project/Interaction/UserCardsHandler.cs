@@ -15,7 +15,7 @@ namespace MTCG_Project.Interaction
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
             {
-                User user = UserHandler.GetUserData(request);
+                User user = UserHandler.GetUserDataByToken(request);
 
                 return CardsUsersDatabaseHandler.GetStackByUser(user);
             }
@@ -29,7 +29,7 @@ namespace MTCG_Project.Interaction
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
             {
-                User user = UserHandler.GetUserData(request);
+                User user = UserHandler.GetUserDataByToken(request);
 
                 return CardsUsersDatabaseHandler.GetDeckByUser(user, format);
             }
@@ -44,7 +44,7 @@ namespace MTCG_Project.Interaction
             if (userstate == 1 || userstate == 2)
             {
                 string[] strings = PrepareStrings(request.Message);
-                User user = UserHandler.GetUserData(request);
+                User user = UserHandler.GetUserDataByToken(request);
 
                 CardsUsersDatabaseHandler.UpdateDeck(user, strings);
                 return;

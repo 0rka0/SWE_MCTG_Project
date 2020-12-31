@@ -44,7 +44,7 @@ namespace MTCG_Project.Interaction
             {
                 if(AccessUserdata(request))
                 {
-                    User user = GetUserData(request);
+                    User user = GetUserDataByToken(request);
                     return String.Format("ID: {0}\nUsername: {1}\nCoins: {2}\nName: {3}\nBio: {4}\nImage: {5}\n", 
                         user.uid, user.username, user.coins, user.name, user.bio, user.image);
                 }
@@ -59,7 +59,7 @@ namespace MTCG_Project.Interaction
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)     //eingeloggt
             {                
-                User user = GetUserData(request);
+                User user = GetUserDataByToken(request);
                 if (user.gamesPlayed == 0)
                     winrate = 0;
                 else
@@ -110,11 +110,18 @@ namespace MTCG_Project.Interaction
             return 0;
         }
 
-        static public User GetUserData(RequestContext request)
+        static public User GetUserDataByToken(RequestContext request)
         {
             string token = GetToken(request);
 
-            User user = UserDatabaseHandler.GetUserData(token);
+            User user = UserDatabaseHandler.GetUserDataByToken(token);
+
+            return user;
+        }
+
+        static public User GetUserDataById(int id)
+        {
+            User user = UserDatabaseHandler.GetUserDataById(id);
 
             return user;
         }

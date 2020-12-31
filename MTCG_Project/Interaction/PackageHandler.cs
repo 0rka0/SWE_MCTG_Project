@@ -51,7 +51,7 @@ namespace MTCG_Project.Interaction
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)     //eingeloggt
             {
-                User user = UserHandler.GetUserData(request);
+                User user = UserHandler.GetUserDataByToken(request);
                 if (user.coins < 5)
                 {
                     Console.WriteLine("Nicht genug Muenzen im Besitz!\n");
