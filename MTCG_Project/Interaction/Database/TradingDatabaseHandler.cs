@@ -53,20 +53,18 @@ namespace MTCG_Project.Interaction
                 conn.Close();
                 throw new Exception(exMsg);
             }
-            
-            using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_shop = true WHERE id = '@id'", conn))
-            {      //adding parameters
-                cmd.Parameters.AddWithValue("@id", item.cardToTrade);
-                cmd.ExecuteNonQuery();
-            }
+
             conn.Close();
+            CardsUsersDatabaseHandler.updateShopStatusTrue(item.cardToTrade);
         }
 
-        static public void DeleteTradingDeal(string id)
+        static public void DeleteTradingDeal(string tradeId)
         {
+            CardsUsersDatabaseHandler.updateShopStatusFalse(tradeId);
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
-            string deleteString = String.Format("DELETE FROM tradings WHERE id = '{0}'", id);
+
+            string deleteString = String.Format("DELETE FROM tradings WHERE id = '{0}'", tradeId);
             using (var cmd = new NpgsqlCommand(deleteString, conn))     
             {
                 cmd.ExecuteNonQuery();
@@ -74,9 +72,41 @@ namespace MTCG_Project.Interaction
             conn.Close();
         }
 
-        static public void Trade()
+        static public bool Trade(string tradeId, User user, string offeredCardId, string cType, float cDamage)
         {
+            string cttId = "";
+            string type = "";
+            float minDam = 0;
+            int uId = 0;
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
 
+            string selectString = String.Format("SELECT * FROM tradings WHERE id = '{0}'", tradeId);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                if (reader.Read())
+                {
+                    cttId = reader[1].ToString();
+                    type = reader[2].ToString();
+                    minDam = (float)((double)reader[3]);
+                    uId = (int)reader[4];
+                }
+                else
+                {
+                    conn.Close();
+                    return false;
+                }
+
+            if (!cType.Equals(type, StringComparison.CurrentCultureIgnoreCase)  || minDam > cDamage)
+            {
+                conn.Close();
+                return false;
+            }
+
+            conn.Close();
+
+            CardsUsersDatabaseHandler.swapCards(user.uid, offeredCardId, uId, cttId);
+            return true;
         }
 
         static public bool CheckDealToUser(string tradeId, User user)

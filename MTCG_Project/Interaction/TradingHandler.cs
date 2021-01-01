@@ -4,6 +4,7 @@ using System.Text;
 using MTCG_Project.Server;
 using MTCG_Project.MTCG.Trading;
 using MTCG_Project.MTCG.Cards;
+using MTCG_Project.MTCG.NamespaceUser;
 using Newtonsoft.Json;
 
 namespace MTCG_Project.Interaction
@@ -27,11 +28,12 @@ namespace MTCG_Project.Interaction
             if (userstate == 1 || userstate == 2)
             {
                 TradeItem item = JsonConvert.DeserializeObject<TradeItem>(request.Message);
-                if (UserCardsHandler.CheckValidCardToUser(item.cardToTrade, UserHandler.GetUserDataByToken(request)))
+                User user = UserHandler.GetUserDataByToken(request);
+                if (UserCardsHandler.CheckValidCardToUser(item.cardToTrade, user))
                 {
                     try
                     {
-                        TradingDatabaseHandler.CreateTradingDeal(UserHandler.GetUserDataByToken(request), item);
+                        TradingDatabaseHandler.CreateTradingDeal(user, item);
                         Console.WriteLine("Trade Deal erfolgreich erstellt!\n");
                     }
                     catch (Exception e)
@@ -54,7 +56,6 @@ namespace MTCG_Project.Interaction
                 string id = ExtractIdFromRessource(request.Ressource);
                 if (TradingDatabaseHandler.CheckDealToUser(id, UserHandler.GetUserDataByToken(request)))
                 {
-                    //card id needed to update cards_users
                     TradingDatabaseHandler.DeleteTradingDeal(id);
                     return "Deal erfolgreich gelöscht!";
                 }
@@ -69,13 +70,25 @@ namespace MTCG_Project.Interaction
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)
             {
-                string id = ExtractIdFromRessource(request.Ressource);
-                if (!TradingDatabaseHandler.CheckDealToUser(id, UserHandler.GetUserDataByToken(request)))
+                string tradeId = ExtractIdFromRessource(request.Ressource);
+                User user = UserHandler.GetUserDataByToken(request);
+                if (!TradingDatabaseHandler.CheckDealToUser(tradeId, user))
                 {
-                    string str = request.Message.Trim('"');
-                    Console.WriteLine(str);
-                    //ICard needs to be created to get type, Trade() function needs to be implemented
-                    TradingDatabaseHandler.Trade();
+                    string offeredCardId = request.Message.Trim('"');
+                    DummyCard dummyCard = CardsUsersDatabaseHandler.GetDummyCard(user, offeredCardId);
+                    if (dummyCard != null)
+                    {
+                        ICard card = DummyCardConverter.Convert(dummyCard);
+                        if (TradingDatabaseHandler.Trade(tradeId, user, offeredCardId, card.type, card.damage))
+                        {
+                            TradingDatabaseHandler.DeleteTradingDeal(tradeId);
+                            Console.WriteLine("Tausch erfolgreich!\n");
+                            return;
+                        }
+                        Console.WriteLine("Tausch leider nicht erfolgreich, Anforderungen nicht erfüllt!\n");
+                        return;
+                    }
+                    Console.WriteLine("Karte kann existiert nicht oder kann nicht getauscht werden!\n");
                     return;
                 }
                 Console.WriteLine("Man kann nicht mit sich selbst handeln!\n");

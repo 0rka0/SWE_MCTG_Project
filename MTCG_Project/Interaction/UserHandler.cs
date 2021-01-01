@@ -9,7 +9,7 @@ namespace MTCG_Project.Interaction
 {
     static public class UserHandler
     {
-        static public void CreateUser(RequestContext request)
+        static public void CreateUser(RequestContext request)   //register user for further use
         {
             User tmpUser = JsonConvert.DeserializeObject<User>(request.Message);    //temp user to write data into db
             try
@@ -23,7 +23,7 @@ namespace MTCG_Project.Interaction
             }
         }
 
-        static public void LoginUser(RequestContext request)
+        static public void LoginUser(RequestContext request)    //login user to perform actions
         {
             User tmpUser = JsonConvert.DeserializeObject<User>(request.Message);
             try
@@ -37,10 +37,10 @@ namespace MTCG_Project.Interaction
             }
         }
 
-        static public string ShowPersonalUserData(RequestContext request)
+        static public string ShowPersonalUserData(RequestContext request)   //a user can view his own personal data
         {
-            int userstate = UserHandler.AuthUser(request);
-            if (userstate == 1 || userstate == 2)     //eingeloggt
+            int userstate = UserHandler.AuthUser(request);      //check if user is logged in
+            if (userstate == 1 || userstate == 2) 
             {
                 if(AccessUserdata(request))
                 {
@@ -53,7 +53,7 @@ namespace MTCG_Project.Interaction
             return "Nicht eingeloggt!";
         }
 
-        static public string ShowPersonalStats(RequestContext request)
+        static public string ShowPersonalStats(RequestContext request)      //a user can view his personal stats
         {
             float winrate;
             int userstate = UserHandler.AuthUser(request);
@@ -71,7 +71,7 @@ namespace MTCG_Project.Interaction
             return "Nicht eingeloggt!";
         }
 
-        static public string ShowScoreboard(RequestContext request)
+        static public string ShowScoreboard(RequestContext request)         //a scoreboard including stats of all users can be displayed
         {
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)     //eingeloggt
@@ -81,12 +81,12 @@ namespace MTCG_Project.Interaction
             return "Nicht eingeloggt!";
         }
 
-        static public void UpdateExtraUserData(RequestContext request)
+        static public void UpdateExtraUserData(RequestContext request)      //used to edit data like name, bio and image
         {
             int userstate = UserHandler.AuthUser(request);
             if (userstate == 1 || userstate == 2)     //eingeloggt
             {
-                if (AccessUserdata(request))
+                if (AccessUserdata(request))        //check if user is permitted to access data (if user tries to edit his own data)
                 { 
                     User user = JsonConvert.DeserializeObject<User>(request.Message);
                     user.username = ExtractUserFromToken(GetToken(request));
@@ -110,7 +110,7 @@ namespace MTCG_Project.Interaction
             return 0;
         }
 
-        static public User GetUserDataByToken(RequestContext request)
+        static public User GetUserDataByToken(RequestContext request)     
         {
             string token = GetToken(request);
 

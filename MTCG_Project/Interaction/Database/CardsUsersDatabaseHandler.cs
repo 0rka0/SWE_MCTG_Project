@@ -17,7 +17,7 @@ namespace MTCG_Project.Interaction
             conn.Open();
 
             for (int i = 0; i < 5; i++)
-            {               
+            {
                 using (var cmd = new NpgsqlCommand("INSERT INTO cards_users VALUES (@id, @cn, @damage, @uid)", conn))        //inserting into db
                 {      //adding parameters
                     cmd.Parameters.AddWithValue("@id", cards[i].id);
@@ -112,13 +112,13 @@ namespace MTCG_Project.Interaction
             int counter = 0;
             using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
-            
+
             for (int i = 0; i < strings.Length; i++)
             {
                 string selectString = String.Format("SELECT * FROM cards_users WHERE id = '{0}' AND userid = {1} AND in_shop = false", strings[i], user.uid);
                 using (var cmd = new NpgsqlCommand(selectString, conn))
                 using (var reader = cmd.ExecuteReader())
-                    if(reader.Read())
+                    if (reader.Read())
                     {
                         counter++;
                     }
@@ -138,7 +138,7 @@ namespace MTCG_Project.Interaction
         {   //set all cards to false and selected cards true again
             using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
-            using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_deck = false WHERE userid = @uid", conn))       
+            using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_deck = false WHERE userid = @uid", conn))
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@uid", user.uid);
                 cmd.ExecuteNonQuery();
@@ -156,7 +156,7 @@ namespace MTCG_Project.Interaction
                 }
             }
 
-            using (var cmd = new NpgsqlCommand("UPDATE users SET deck_set = true WHERE uid = @uid", conn))       
+            using (var cmd = new NpgsqlCommand("UPDATE users SET deck_set = true WHERE uid = @uid", conn))
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@uid", user.uid);
                 cmd.ExecuteNonQuery();
@@ -197,16 +197,18 @@ namespace MTCG_Project.Interaction
             using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
 
-            string selectString = String.Format("SELECT id, cardname, damage FROM cards_users WHERE userid = {0} AND in_deck = true", user.uid);
+            string selectString = String.Format("SELECT id, cardname, damage FROM cards_users WHERE userid = {0} AND id = '{1}'", user.uid, cardId);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
-                while (reader.Read())
+                if (reader.Read())
                 {
                     card.id = reader[0].ToString();
                     card.name = reader[1].ToString();
                     card.damage = (float)((double)reader[2]);
                     counter++;
                 }
+                else
+                    card = null;
 
             conn.Close();
             return card;
@@ -226,6 +228,58 @@ namespace MTCG_Project.Interaction
 
             conn.Close();
             return result;
+        }
+
+        static public void updateShopStatusFalse(string tradeId)
+        {
+            string cttId = "";
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            string selectString = String.Format("SELECT card_to_trade FROM tradings WHERE id = '{0}'", tradeId);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                if (reader.Read())
+                    cttId = reader[0].ToString();
+
+            using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_shop = false WHERE id = @cid", conn))
+            {      //adding parameters
+                cmd.Parameters.AddWithValue("@cid", cttId);
+                cmd.ExecuteNonQuery();
+            }
+
+            conn.Close();
+        }
+
+        static public void updateShopStatusTrue(string cttId)
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+            string updateString = String.Format("UPDATE cards_users SET in_shop = true WHERE id = '{0}'", cttId);
+            using (var cmd = new NpgsqlCommand(updateString, conn))
+            {      
+                cmd.ExecuteNonQuery();
+            }
+            conn.Close();
+        }
+
+        static public void swapCards(int offerUid, string offerCardId, int cttUid, string cttId)        //swapping card owners after all other conditions have been met
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+            string updateString1 = String.Format("UPDATE cards_users SET userid = {0} WHERE id = '{1}'", offerUid, cttId);
+            using (var cmd = new NpgsqlCommand(updateString1, conn))
+            {
+                cmd.ExecuteNonQuery();
+            }
+
+            string updateString2 = String.Format("UPDATE cards_users SET userid = {0} WHERE id = '{1}'", cttUid, offerCardId);
+            using (var cmd = new NpgsqlCommand(updateString2, conn))
+            {
+                cmd.ExecuteNonQuery();
+            }
+
+            conn.Close();
         }
     }
 }
