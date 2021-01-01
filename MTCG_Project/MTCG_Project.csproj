@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>D:\FH_WS20\SWE\if19b016_MCTG\MTCG_Project\Backup6\</UpgradeBackupLocation>
+    <OldToolsVersion>Current</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Interaction\GetRequests\**" />
     <Compile Remove="MTCG\Store\**" />
@@ -13,10 +14,8 @@
     <None Remove="Interaction\GetRequests\**" />
     <None Remove="MTCG\Store\**" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Npgsql" Version="5.0.1.1" />
   </ItemGroup>
-
 </Project>
