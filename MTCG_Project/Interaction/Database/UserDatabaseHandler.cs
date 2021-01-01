@@ -170,7 +170,7 @@ namespace MTCG_Project.Interaction
 
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
-                while (reader.Read())
+                if (reader.Read())
                 {
                     user.uid = (int)reader[0];
                     user.username = reader[1].ToString();
@@ -183,6 +183,8 @@ namespace MTCG_Project.Interaction
                     user.image = reader[8].ToString();
                     user.deck_set = (bool)reader[9];
                 }
+                else
+                    return null;
             conn.Close();
 
             return user;

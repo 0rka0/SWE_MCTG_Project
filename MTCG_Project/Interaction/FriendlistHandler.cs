@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using MTCG_Project.Server;
+using MTCG_Project.MTCG.NamespaceUser;
 
 namespace MTCG_Project.Interaction
 {
@@ -23,7 +24,11 @@ namespace MTCG_Project.Interaction
             if (userstate == 1 || userstate == 2)    
             {
                 string friendName = ExtractUsernameFromRessource(request.Ressource);
-                FriendsDatabaseHandler.AddFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName)); //To be implemented
+                User user = UserHandler.GetUserDataByUsername(friendName);
+                if (user != null)
+                    FriendsDatabaseHandler.AddFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName)); //To be implemented
+                else
+                    Console.WriteLine("Ausgewählter Username existiert nicht!\n");
                 return;
             }
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
@@ -35,7 +40,10 @@ namespace MTCG_Project.Interaction
             if (userstate == 1 || userstate == 2)
             {
                 string friendName = ExtractUsernameFromRessource(request.Ressource);
-                return FriendsDatabaseHandler.DeleteFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName)); 
+                User user = UserHandler.GetUserDataByUsername(friendName);
+                if (user != null)
+                    return FriendsDatabaseHandler.DeleteFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName));
+                return "Ausgewählter Username existiert nicht!";
             }
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
             return "Nicht Eingeloggt!";
