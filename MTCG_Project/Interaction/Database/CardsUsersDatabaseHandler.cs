@@ -287,7 +287,16 @@ namespace MTCG_Project.Interaction
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
+            string updateString = String.Format("UPDATE cards_users SET userid = 0 WHERE id = '{0}'", cardId);
+            using (var cmd = new NpgsqlCommand(updateString, conn))
+            {
+                cmd.ExecuteNonQuery();
+            }
+
             conn.Close();
+
+            user.coins++;
+            UserHandler.UpdateCoins(user);
         }
     }
 }

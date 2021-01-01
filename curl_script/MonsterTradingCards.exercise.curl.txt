@@ -271,7 +271,10 @@ echo.
 echo.
 
 REM --------------------------------------------------
-echo 21) sell card for coins
+echo 22) sell card for coins
+echo try to trade card in deck (should fail)
+curl -X POST http://localhost:10001/tradings/coins --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d "\"171f6076-4eb5-4a7d-b3f2-2d650cc3d237\""
+echo sell card
 curl -X POST http://localhost:10001/tradings/coins --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d "\"4ec8b269-0dfa-4f97-809a-2c63fe2a0025\""
 echo.
 echo.
