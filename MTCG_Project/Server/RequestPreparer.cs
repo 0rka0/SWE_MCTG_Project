@@ -135,7 +135,11 @@ namespace MTCG_Project.Server
             {
                 return true;
             }
-            if(ress.Contains(RequestCalls.specific_trade))
+            if (String.Compare(ress, RequestCalls.trade_coins) == 0)
+            {
+                return true;
+            }
+            if (ress.Contains(RequestCalls.specific_trade))
             {
                 return true;
             }

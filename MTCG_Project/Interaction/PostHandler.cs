@@ -33,6 +33,10 @@ namespace MTCG_Project.Interaction
             {
                 TradingHandler.CreateDeal(request);
             }
+            if (String.Compare(request.Ressource, RequestCalls.trade_coins) == 0)
+            {
+                //TradingHandler.SellCard(request);
+            }
             if (request.Ressource.Contains(RequestCalls.specific_trade))
             {
                 TradingHandler.Trade(request);
