@@ -146,38 +146,28 @@ namespace MTCG_Project.Interaction
 
         static public User GetUserDataByToken(string token)
         {
-            User user = new User();
-            using var conn = new NpgsqlConnection(connString);
-            conn.Open();
-
             string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image, deck_set FROM users WHERE token = '{0}'", token);
-            using (var cmd = new NpgsqlCommand(selectString, conn))
-            using (var reader = cmd.ExecuteReader())
-                while (reader.Read())
-                {
-                    user.uid = (int)reader[0];
-                    user.username = reader[1].ToString();
-                    user.coins = (int)reader[2];
-                    user.gamesPlayed = (int)reader[3];
-                    user.elo = (int)reader[4];
-                    user.wins = (int)reader[5];
-                    user.name = reader[6].ToString();
-                    user.bio = reader[7].ToString();
-                    user.image = reader[8].ToString();
-                    user.deck_set = (bool)reader[9];
-                }
-            conn.Close();
-
-            return user;
+            return GetData(selectString);
         }
 
         static public User GetUserDataById(int id)
+        {
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image, deck_set FROM users WHERE uid = {0}", id);
+            return GetData(selectString);
+        }
+
+        static public User GetUserDataByUsername(string username)
+        {
+            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image, deck_set FROM users WHERE username = '{0}'", username);
+            return GetData(selectString);
+        }
+
+        static User GetData(string selectString)
         {
             User user = new User();
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            string selectString = String.Format("SELECT uid, username, coins, games_played, elo, wins, name, bio, image, deck_set FROM users WHERE uid = {0}", id);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
                 while (reader.Read())

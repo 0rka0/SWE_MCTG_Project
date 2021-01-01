@@ -280,6 +280,24 @@ echo.
 echo.
 
 REM --------------------------------------------------
+echo 23) interact with friends
+echo show friendlist
+curl -X GET http://localhost:10001/friends --header "Authorization: Basic kienboec-mtcgToken"
+echo add friend (only request not accepted yet)
+curl -X POST http://localhost:10001/friends/altenhof --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d ""
+echo add friend back (works as accept)
+curl -X POST http://localhost:10001/friends/kienboec --header "Content-Type: application/json" --header "Authorization: Basic altenhof-mtcgToken" -d ""
+echo cannot add yourself (should fail)
+curl -X POST http://localhost:10001/friends/kienboec --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d ""
+echo show friendlist after adding
+curl -X GET http://localhost:10001/friends --header "Authorization: Basic kienboec-mtcgToken"
+curl -X GET http://localhost:10001/friends --header "Authorization: Basic altenhof-mtcgToken"
+echo remove friend 
+curl -X DELETE http://localhost:10001/friends/altenhof --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken"
+echo.
+echo.
+
+REM --------------------------------------------------
 echo end...
 
 REM this is approx a sleep 

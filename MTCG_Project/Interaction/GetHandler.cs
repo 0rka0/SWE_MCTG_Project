@@ -37,6 +37,10 @@ namespace MTCG_Project.Interaction
             {
                 return TradingHandler.ShowTradeDeals(request);
             }
+            if (String.Compare(request.Ressource, RequestCalls.friends) == 0)
+            {
+                return FriendlistHandler.ShowFriendlist(request);
+            }
             return "Kein passender Befehl!";
         }
     }

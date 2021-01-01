@@ -113,17 +113,17 @@ namespace MTCG_Project.Interaction
         static public User GetUserDataByToken(RequestContext request)     
         {
             string token = GetToken(request);
-
-            User user = UserDatabaseHandler.GetUserDataByToken(token);
-
-            return user;
+            return UserDatabaseHandler.GetUserDataByToken(token);
         }
 
         static public User GetUserDataById(int id)
         {
-            User user = UserDatabaseHandler.GetUserDataById(id);
+            return UserDatabaseHandler.GetUserDataById(id);
+        }
 
-            return user;
+        static public User GetUserDataByUsername(string username)
+        {
+            return UserDatabaseHandler.GetUserDataByUsername(username);
         }
 
         static public void UpdateCoins(User user)

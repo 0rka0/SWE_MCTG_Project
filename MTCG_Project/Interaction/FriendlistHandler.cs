@@ -9,17 +9,41 @@ namespace MTCG_Project.Interaction
     {
         static public string ShowFriendlist(RequestContext request)
         {
-            return "Trying to show friends";
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)     
+            {
+                return FriendsDatabaseHandler.ShowFriendlist(UserHandler.GetUserDataByToken(request));
+            }
+            return "Nicht eingeloggt!";
         }
 
         static public void AddFriend(RequestContext request)
         {
-            Console.WriteLine("Trying to add friend");
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)    
+            {
+                string friendName = ExtractUsernameFromRessource(request.Ressource);
+                FriendsDatabaseHandler.AddFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName)); //To be implemented
+                return;
+            }
+            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
         }
 
         static public string DeleteFriend(RequestContext request)
         {
-            return "Trying to delete friend";
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)
+            {
+                string friendName = ExtractUsernameFromRessource(request.Ressource);
+                return FriendsDatabaseHandler.DeleteFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName)); 
+            }
+            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            return "Nicht Eingeloggt!";
+        }
+
+        static string ExtractUsernameFromRessource(string ress)
+        {
+            return ress.Replace("/friends/", "");
         }
     }
 }

@@ -13,6 +13,10 @@ namespace MTCG_Project.Interaction
             {
                 return TradingHandler.DeleteDeal(request);
             }
+            if (request.Ressource.Contains(RequestCalls.friends))
+            {
+                return FriendlistHandler.DeleteFriend(request);
+            }
             return "Kein passender Befehl!";
         }
 
