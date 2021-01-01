@@ -21,5 +21,6 @@ namespace MTCG_Project.Server
         public const string tradings = "/tradings";
         public const string trade_coins = "/tradings/coins";
         public const string specific_trade = "/tradings/";
+        public const string friends = "/friends";
     }
 }

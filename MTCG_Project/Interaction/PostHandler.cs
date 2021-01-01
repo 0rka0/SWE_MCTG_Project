@@ -42,6 +42,10 @@ namespace MTCG_Project.Interaction
             {
                 TradingHandler.Trade(request);
             }
+            if(String.Compare(request.Ressource, RequestCalls.friends) == 0)
+            {
+                FriendlistHandler.AddFriend(request);
+            }
         }
     }
 }

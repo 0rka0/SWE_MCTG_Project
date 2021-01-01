@@ -143,6 +143,10 @@ namespace MTCG_Project.Server
             {
                 return true;
             }
+            if (ress.Contains(RequestCalls.friends))
+            {
+                return true;
+            }
             ResponseHandler.Status400(Writer);
             return false;
         }
