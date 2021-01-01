@@ -35,7 +35,8 @@ namespace MTCG_Project.Interaction
             }
             if (String.Compare(request.Ressource, RequestCalls.trade_coins) == 0)
             {
-                //TradingHandler.SellCard(request);
+                TradingHandler.SellCard(request);
+                return;
             }
             if (request.Ressource.Contains(RequestCalls.specific_trade))
             {

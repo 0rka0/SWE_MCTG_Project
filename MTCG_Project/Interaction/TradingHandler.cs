@@ -97,7 +97,26 @@ namespace MTCG_Project.Interaction
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
         }
 
-            static string ExtractIdFromRessource(string ress)
+        static public void SellCard(RequestContext request)
+        {
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)
+            {
+                User user = UserHandler.GetUserDataByToken(request);
+                string cardId = request.Message.Trim('"');
+                if(UserCardsHandler.CheckValidCardToUser(cardId, user))
+                {
+                    UserCardsHandler.SellCard(cardId, user);
+                    Console.WriteLine("Karte erfolgreich für eine Muenze verkauft!");
+                    return;
+                }
+                Console.WriteLine("Die ausgewählte Karte ist nicht im Besitz oder kann nicht gewählt werden!\n");
+                return;
+            }
+            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+        }
+
+        static string ExtractIdFromRessource(string ress)
         {
             return ress.Replace("/tradings/", "");
         }

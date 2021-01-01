@@ -281,5 +281,13 @@ namespace MTCG_Project.Interaction
 
             conn.Close();
         }
+
+        static public void SellCard(string cardId, User user)
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            conn.Close();
+        }
     }
 }

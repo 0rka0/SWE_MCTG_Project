@@ -83,5 +83,10 @@ namespace MTCG_Project.Interaction
         {
             return CardsUsersDatabaseHandler.CheckValidCard(cardId, user);
         }
+
+        static public void SellCard(string cardId, User user)
+        {
+            CardsUsersDatabaseHandler.SellCard(cardId, user);
+        }
     }
 }
