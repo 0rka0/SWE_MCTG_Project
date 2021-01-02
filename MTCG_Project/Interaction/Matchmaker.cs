@@ -22,7 +22,7 @@ namespace MTCG_Project.Interaction
                         User opp = FindOpponent(user);
                         BattleManager battle = new BattleManager(user, opp);
                         battle.PrepareDecks();
-                        battle.StartBattle();
+                        battle.StartMatchmadeBattle();
                     }
                     catch (Exception e)
                     {

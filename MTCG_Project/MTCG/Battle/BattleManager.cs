@@ -26,7 +26,27 @@ namespace MTCG_Project.MTCG.Battle
             user2.deck = UserCardsHandler.GenerateBattleDeck(user2);
         }
 
-        public void StartBattle()
+        public void StartMatchmadeBattle()
+        {
+            int winner = GameFlow();
+
+            MatchmadeBattleEnd(winner);
+
+            foreach (string s in log)
+                Console.WriteLine(s);
+        }
+
+        public void StartFriendBattle()
+        {
+            int winner = GameFlow();
+
+            FriendBattleEnd(winner);
+
+            foreach (string s in log)
+                Console.WriteLine(s);
+        }
+
+        int GameFlow()
         {
             int winner = 0;
             while (round <= 100)
@@ -37,35 +57,7 @@ namespace MTCG_Project.MTCG.Battle
                     break;
                 round++;
             }
-
-            if (winner != 0)
-            {
-                log.Add(String.Format("Player {0} won the battle!\n", winner));
-                if(winner == 1)
-                {
-                    user1.wins++;
-                    user1.elo += 3;
-                    user2.elo -= 5;
-                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", user1.elo-3, user1.elo, user2.elo+5, user2.elo));
-                }
-                else
-                {
-                    user2.wins++;
-                    user2.elo += 3;
-                    user1.elo -= 5;
-                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", user1.elo+5, user1.elo, user2.elo-3, user2.elo));
-                }
-            }
-            else
-                log.Add("The battle has concluded in a draw\nRatings unchanged\n");
-
-            user1.gamesPlayed++;
-            user2.gamesPlayed++;
-
-            UserHandler.UpdateAfterBattle(user1, user2);
-
-            foreach (string s in log)
-                Console.WriteLine(s);
+            return winner;
         }
 
         void Turn()
@@ -100,6 +92,45 @@ namespace MTCG_Project.MTCG.Battle
             if (user2.deck.GetLength() < 1)
                 return 1;
             return 0;
+        }
+
+        void MatchmadeBattleEnd(int winner)
+        {
+            if (winner != 0)
+            {
+                log.Add(String.Format("Player {0} won the battle!\n", winner));
+                if (winner == 1)
+                {
+                    user1.wins++;
+                    user1.elo += 3;
+                    user2.elo -= 5;
+                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", user1.elo - 3, user1.elo, user2.elo + 5, user2.elo));
+                }
+                else
+                {
+                    user2.wins++;
+                    user2.elo += 3;
+                    user1.elo -= 5;
+                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", user1.elo + 5, user1.elo, user2.elo - 3, user2.elo));
+                }
+            }
+            else
+                log.Add("The battle has concluded in a draw\nRatings unchanged\n");
+
+            user1.gamesPlayed++;
+            user2.gamesPlayed++;
+
+            UserHandler.UpdateAfterBattle(user1, user2);
+        }
+
+        void FriendBattleEnd(int winner)
+        {
+            if (winner != 0)
+            {
+                log.Add(String.Format("Player {0} won the battle!\n", winner));
+            }
+            else
+                log.Add("The battle has concluded in a draw\nRatings unchanged\n");
         }
     }
 }
