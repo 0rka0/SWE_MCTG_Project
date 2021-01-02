@@ -36,6 +36,31 @@ namespace MTCG_Project.Interaction
             Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
         }
 
+        public static void FriendBattleRequest(RequestContext request)
+        {
+            int userstate = UserHandler.AuthUser(request);
+            if (userstate == 1 || userstate == 2)     
+            {
+                User user = UserHandler.GetUserDataByToken(request);
+                User friend = UserHandler.GetUserDataByUsername(ExtractUsernameFromRessource(request.Ressource));
+                if(friend != null && FriendlistHandler.CheckFriends(user,friend))
+                {
+                    if (user.deck_set && friend.deck_set)
+                    {
+                        BattleManager battle = new BattleManager(user, friend);
+                        battle.PrepareDecks();
+                        battle.StartFriendBattle();
+                        return;
+                    }
+                    Console.WriteLine("Es haben nicht beide User ein Deck definiert!\n");
+                    return;
+                }
+                Console.WriteLine("Nicht befreundet!\n");
+                return;
+            }
+            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+        }
+
         static User FindOpponent(User user)
         {
             List<int> goodOpponents = UserDatabaseHandler.SearchOpponentsWithElo(user);
@@ -75,6 +100,10 @@ namespace MTCG_Project.Interaction
                 return opp;
             }
             return null;
+        }
+        static string ExtractUsernameFromRessource(string ress)
+        {
+            return ress.Replace("/battles/", "");
         }
     }
 }

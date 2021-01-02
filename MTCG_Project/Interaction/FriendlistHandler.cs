@@ -49,6 +49,11 @@ namespace MTCG_Project.Interaction
             return "Nicht Eingeloggt!";
         }
 
+        static public bool CheckFriends(User user, User friend)
+        {
+            return FriendsDatabaseHandler.CheckFriends(user, friend);
+        }
+
         static string ExtractUsernameFromRessource(string ress)
         {
             return ress.Replace("/friends/", "");

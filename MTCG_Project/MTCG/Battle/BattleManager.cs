@@ -102,16 +102,18 @@ namespace MTCG_Project.MTCG.Battle
                 if (winner == 1)
                 {
                     user1.wins++;
-                    user1.elo += 3;
-                    user2.elo -= 5;
-                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", user1.elo - 3, user1.elo, user2.elo + 5, user2.elo));
+                    int prevElo1 = user1.elo;
+                    int prevElo2 = user2.elo;
+                    ChangeElo(user1, user2);
+                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", prevElo1, user1.elo, prevElo2, user2.elo));
                 }
                 else
                 {
                     user2.wins++;
-                    user2.elo += 3;
-                    user1.elo -= 5;
-                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", user1.elo + 5, user1.elo, user2.elo - 3, user2.elo));
+                    int prevElo1 = user1.elo;
+                    int prevElo2 = user2.elo;
+                    ChangeElo(user2, user1);
+                    log.Add(String.Format("Player 1 Rating: {0} --> {1}\nPlayer 2 Rating: {2} --> {3}", prevElo1, user1.elo, prevElo2, user2.elo));
                 }
             }
             else
@@ -131,6 +133,35 @@ namespace MTCG_Project.MTCG.Battle
             }
             else
                 log.Add("The battle has concluded in a draw\nRatings unchanged\n");
+        }
+
+        void ChangeElo(User winner, User loser)
+        {
+            if ((winner.elo - loser.elo) > 50)
+            {
+                winner.elo += EloValues.LowestInc;
+                loser.elo -= EloValues.LowestDec;
+            }
+            if ((winner.elo - loser.elo) > 25 && (winner.elo - loser.elo) <= 50)
+            {
+                winner.elo += EloValues.LowInc;
+                loser.elo -= EloValues.LowDec;
+            }
+            if ((winner.elo - loser.elo) <= 25 && (loser.elo - winner.elo) <= 25)
+            {
+                winner.elo += EloValues.NormalInc;
+                loser.elo -= EloValues.NormalDec;
+            }
+            if ((loser.elo - winner.elo) > 25 && (loser.elo - winner.elo) <= 50)
+            {
+                winner.elo += EloValues.HighInc;
+                loser.elo -= EloValues.HighDec;
+            }
+            if ((loser.elo - winner.elo) > 50)
+            {
+                winner.elo += EloValues.HighestInc;
+                loser.elo -= EloValues.LowestDec;
+            }
         }
     }
 }

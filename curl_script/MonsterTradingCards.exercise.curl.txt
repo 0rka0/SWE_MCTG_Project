@@ -298,6 +298,15 @@ echo.
 echo.
 
 REM --------------------------------------------------
+echo 24) Friend Matches
+echo Battling a friend
+start /b "kienboec battle" curl -X POST http://localhost:10001/battles/altenhof --header "Authorization: Basic kienboec-mtcgToken"
+echo Trying to battle someone who is not a friend (should fail)
+start /b "kienboec battle" curl -X POST http://localhost:10001/battles/admin --header "Authorization: Basic kienboec-mtcgToken"
+echo.
+echo.
+
+REM --------------------------------------------------
 echo end...
 
 REM this is approx a sleep 

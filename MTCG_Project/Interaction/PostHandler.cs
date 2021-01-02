@@ -29,6 +29,10 @@ namespace MTCG_Project.Interaction
             {
                 Matchmaker.MatchmadeBattleRequest(request);
             }
+            if(request.Ressource.Contains(RequestCalls.friend_battles))
+            {
+                Matchmaker.FriendBattleRequest(request);
+            }
             if (String.Compare(request.Ressource, RequestCalls.tradings) == 0)
             {
                 TradingHandler.CreateDeal(request);

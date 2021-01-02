@@ -39,21 +39,17 @@ namespace MTCG_Project.Interaction
                 Console.WriteLine("Man kann sich selbst keine Anfrage schicken!\n");
                 return;
             }
-            using var conn = new NpgsqlConnection(connString);  
+            if (CheckFriends(user, friend))
+            {
+                Console.WriteLine("Bereits Freunde!\n");
+                return;
+            }
+
+            using var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            string selectString1 = String.Format("SELECT * FROM friends WHERE ((uid1 = {0} AND uid2 = {1}) OR (uid1 = {1} AND uid2 = {0})) AND accepted = true", user.uid, friend.uid);
-            using (var cmd = new NpgsqlCommand(selectString1, conn))
-            using (var reader = cmd.ExecuteReader())
-                if (reader.Read())
-                {
-                    Console.WriteLine("Bereits Freunde!\n");
-                    conn.Close();
-                    return;
-                }
-
-            string selectString2 = String.Format("SELECT uid1 FROM friends WHERE (uid1 = {0} AND uid2 = {1}) OR (uid1 = {1} AND uid2 = {0})", user.uid, friend.uid);
-            using (var cmd = new NpgsqlCommand(selectString2, conn))
+            string selectString = String.Format("SELECT uid1 FROM friends WHERE (uid1 = {0} AND uid2 = {1}) OR (uid1 = {1} AND uid2 = {0})", user.uid, friend.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
                 if (reader.Read())
                 {
@@ -125,6 +121,22 @@ namespace MTCG_Project.Interaction
                 cmd.ExecuteNonQuery();
             }
             conn.Close();
+        }
+
+        static public bool CheckFriends(User user, User friend)
+        {
+            using var conn = new NpgsqlConnection(connString);
+            conn.Open();
+            string selectString = String.Format("SELECT * FROM friends WHERE ((uid1 = {0} AND uid2 = {1}) OR (uid1 = {1} AND uid2 = {0})) AND accepted = true", user.uid, friend.uid);
+            using (var cmd = new NpgsqlCommand(selectString, conn))
+            using (var reader = cmd.ExecuteReader())
+                if (reader.Read())
+                {
+                    conn.Close();
+                    return true;
+                }
+            conn.Close();
+            return false;
         }
     }
 }

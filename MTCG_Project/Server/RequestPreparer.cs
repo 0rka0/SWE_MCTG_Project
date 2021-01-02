@@ -131,6 +131,10 @@ namespace MTCG_Project.Server
             {
                 return true;
             }
+            if(ress.Contains(RequestCalls.friend_battles))
+            {
+                return true;
+            }
             if (String.Compare(ress, RequestCalls.tradings) == 0)
             {
                 return true;
