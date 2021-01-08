@@ -294,6 +294,8 @@ curl -X GET http://localhost:10001/friends --header "Authorization: Basic kienbo
 curl -X GET http://localhost:10001/friends --header "Authorization: Basic altenhof-mtcgToken"
 echo remove friend 
 curl -X DELETE http://localhost:10001/friends/altenhof --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken"
+echo remove yourself from friendlist (should fail)
+curl -X DELETE http://localhost:10001/friends/kienboec --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken"
 echo.
 echo.
 
@@ -303,6 +305,10 @@ echo Battling a friend
 start /b "kienboec battle" curl -X POST http://localhost:10001/battles/altenhof --header "Authorization: Basic kienboec-mtcgToken"
 echo Trying to battle someone who is not a friend (should fail)
 start /b "kienboec battle" curl -X POST http://localhost:10001/battles/admin --header "Authorization: Basic kienboec-mtcgToken"
+echo.
+curl -X GET http://localhost:10001/stats --header "Authorization: Basic kienboec-mtcgToken"
+echo.
+curl -X GET http://localhost:10001/stats --header "Authorization: Basic altenhof-mtcgToken"
 echo.
 echo.
 

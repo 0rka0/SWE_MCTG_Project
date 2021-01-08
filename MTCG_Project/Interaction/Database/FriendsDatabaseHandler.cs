@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Npgsql;
 using MTCG_Project.MTCG.NamespaceUser;
 
@@ -36,12 +34,12 @@ namespace MTCG_Project.Interaction
         {
             if(user.uid == friend.uid)
             {
-                Console.WriteLine("Man kann sich selbst keine Anfrage schicken!\n");
+                Output.WriteConsole(Output.FriendlistSelfInteraction);
                 return;
             }
             if (CheckFriends(user, friend))
             {
-                Console.WriteLine("Bereits Freunde!\n");
+                Output.WriteConsole(Output.AlreadyFriends);
                 return;
             }
 
@@ -56,24 +54,24 @@ namespace MTCG_Project.Interaction
                     if((int)reader[0] == user.uid)
                     {
                         conn.Close();
-                        Console.WriteLine("Man kann seine eigene Anfrage nicht annehmen!\n");
+                        Output.WriteConsole(Output.FriendlistSelfInteraction);
                         return;
                     }
                     conn.Close();
                     Accept(user, friend);
-                    Console.WriteLine("Freundschaftsanfrage angenommen!\n");
+                    Output.WriteConsole(Output.FriendlistRequestAccepted);
                     return;
                 }
             conn.Close();
 
             Insert(user, friend);
-            Console.WriteLine("Anfrage verschickt!\n");
+            Output.WriteConsole(Output.FriendlistRequestSent);
         }
 
         static public string DeleteFriend(User user, User friend)
         {
             if (user.uid == friend.uid)
-                return "Man sollte stets sein eigener bester Freund bleiben!";
+                return Output.FriendlistSelfInteraction;
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
             string selectString = String.Format("SELECT * FROM friends WHERE (uid1 = {0} AND uid2 = {1}) OR (uid1 = {1} AND uid2 = {0})", user.uid, friend.uid);
@@ -82,17 +80,18 @@ namespace MTCG_Project.Interaction
                 if (!reader.Read())
                 {
                     conn.Close();
-                    return "Nichts zu löschen!";
+                    return Output.FriendlistRemoveError;
                 }
 
             using (var cmd = new NpgsqlCommand("DELETE FROM friends WHERE (uid1 = @id1 AND uid2 = @id2) OR (uid1 = @id2 AND uid2 = @id1)", conn))
             {
                 cmd.Parameters.AddWithValue("@id1", user.uid);
                 cmd.Parameters.AddWithValue("@id2", friend.uid);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
             conn.Close();
-            return "Erfolgreich gelöscht!";
+            return Output.FriendlistRemoveSuccess;
         }
 
         static void Accept(User user, User friend)
@@ -104,6 +103,7 @@ namespace MTCG_Project.Interaction
             {
                 cmd.Parameters.AddWithValue("@id1", user.uid);
                 cmd.Parameters.AddWithValue("@id2", friend.uid);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
 
@@ -118,6 +118,7 @@ namespace MTCG_Project.Interaction
             {
                 cmd.Parameters.AddWithValue("@id1", user.uid);      
                 cmd.Parameters.AddWithValue("@id2", friend.uid);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
             conn.Close();

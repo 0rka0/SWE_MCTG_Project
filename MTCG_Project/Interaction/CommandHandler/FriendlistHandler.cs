@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MTCG_Project.Server;
+﻿using MTCG_Project.Server;
 using MTCG_Project.MTCG.NamespaceUser;
 
 namespace MTCG_Project.Interaction
@@ -15,7 +12,7 @@ namespace MTCG_Project.Interaction
             {
                 return FriendsDatabaseHandler.ShowFriendlist(UserHandler.GetUserDataByToken(request));
             }
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public void AddFriend(RequestContext request)
@@ -28,10 +25,10 @@ namespace MTCG_Project.Interaction
                 if (user != null)
                     FriendsDatabaseHandler.AddFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName)); //To be implemented
                 else
-                    Console.WriteLine("Ausgewählter Username existiert nicht!\n");
+                    Output.WriteConsole(Output.UserDoesNotExist);
                 return;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static public string DeleteFriend(RequestContext request)
@@ -43,10 +40,9 @@ namespace MTCG_Project.Interaction
                 User user = UserHandler.GetUserDataByUsername(friendName);
                 if (user != null)
                     return FriendsDatabaseHandler.DeleteFriend(UserHandler.GetUserDataByToken(request), UserHandler.GetUserDataByUsername(friendName));
-                return "Ausgewählter Username existiert nicht!";
+                return Output.UserDoesNotExist;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
-            return "Nicht Eingeloggt!";
+            return Output.AuthError;
         }
 
         static public bool CheckFriends(User user, User friend)

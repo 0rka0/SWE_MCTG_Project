@@ -23,7 +23,7 @@ namespace MTCG_Project.Server
             return request;
         }
 
-        public void PrepareRequest(StreamWriter writer, RequestContext request, List<RequestContext> messageList)
+        public void PrepareRequest(StreamWriter writer, RequestContext request)
         {
             Writer = writer;
             string[] ressourceElements = request.Ressource.Split("/", StringSplitOptions.RemoveEmptyEntries);
@@ -46,7 +46,7 @@ namespace MTCG_Project.Server
 
 
             RequestHandler requestHandler = new RequestHandler();
-            requestHandler.HandleRequestByVerb(Reader, Writer, request, ressourceElements, messageList);
+            requestHandler.HandleRequestByVerb(Reader, Writer, request);
         }
 
         bool RequestError(RequestContext request)//checks for errors in header

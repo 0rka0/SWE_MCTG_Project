@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Npgsql;
 using MTCG_Project.MTCG.NamespaceUser;
 using MTCG_Project.MTCG.Trading;
@@ -44,16 +42,15 @@ namespace MTCG_Project.Interaction
                     cmd.Parameters.AddWithValue("@type", item.type);
                     cmd.Parameters.AddWithValue("@md", item.minimumDamage);
                     cmd.Parameters.AddWithValue("@uid", user.uid);
+                    cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
             }
             catch(Exception e)
             {
-                string exMsg = String.Format("Es existiert bereits ein Trading Deal mit der angegebenen Karte oder ID!\n");
                 conn.Close();
-                throw new Exception(exMsg);
+                throw new Exception(Output.TradeCreationAlreadyExists);
             }
-
             conn.Close();
             CardsUsersDatabaseHandler.updateShopStatusTrue(item.cardToTrade);
         }
@@ -67,6 +64,7 @@ namespace MTCG_Project.Interaction
             string deleteString = String.Format("DELETE FROM tradings WHERE id = '{0}'", tradeId);
             using (var cmd = new NpgsqlCommand(deleteString, conn))     
             {
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
             conn.Close();
@@ -102,7 +100,6 @@ namespace MTCG_Project.Interaction
                 conn.Close();
                 return false;
             }
-
             conn.Close();
 
             CardsUsersDatabaseHandler.swapCards(user.uid, offeredCardId, uId, cttId);

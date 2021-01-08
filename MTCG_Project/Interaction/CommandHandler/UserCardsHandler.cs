@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MTCG_Project.Server;
+﻿using MTCG_Project.Server;
 using MTCG_Project.MTCG.NamespaceUser;
 using MTCG_Project.MTCG.Cards;
 
@@ -18,9 +15,7 @@ namespace MTCG_Project.Interaction
 
                 return CardsUsersDatabaseHandler.GetStackByUser(user);
             }
-
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public string ShowDeck(RequestContext request, bool format)
@@ -32,9 +27,7 @@ namespace MTCG_Project.Interaction
 
                 return CardsUsersDatabaseHandler.GetDeckByUser(user, format);
             }
-
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public void ConfigureDeck(RequestContext request)
@@ -48,8 +41,7 @@ namespace MTCG_Project.Interaction
                 CardsUsersDatabaseHandler.UpdateDeck(user, strings);
                 return;
             }
-
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         public static BattleDeck GenerateBattleDeck(User user)

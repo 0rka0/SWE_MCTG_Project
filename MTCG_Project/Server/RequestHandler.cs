@@ -9,25 +9,25 @@ namespace MTCG_Project.Server
     {
         StreamWriter Writer;
         StreamReader Reader;
-        public void HandleRequestByVerb(StreamReader reader, StreamWriter writer, RequestContext request, string[] ressourceElements, List<RequestContext> messageList)
+        public void HandleRequestByVerb(StreamReader reader, StreamWriter writer, RequestContext request)
         {
             Writer = writer;
             Reader = reader;
             if (String.Compare(request.Verb, HttpData.Post) == 0)
             {
-                HandlePost(request, ressourceElements, messageList);
+                HandlePost(request);
             }
             else if (String.Compare(request.Verb, HttpData.Get) == 0)
             {
-                HandleGet(request, ressourceElements, messageList);
+                HandleGet(request);
             }
             else if (String.Compare(request.Verb, HttpData.Put) == 0)
             {
-                HandlePut(request, messageList);
+                HandlePut(request);
             }
             else if (String.Compare(request.Verb, HttpData.Delete) == 0)
             {
-                HandleDelete(request, ressourceElements, messageList);
+                HandleDelete(request);
             }
             else
             {
@@ -35,7 +35,7 @@ namespace MTCG_Project.Server
             }
         }
 
-        void HandlePost(RequestContext request, string[] ressourceElements, List<RequestContext>messageList)
+        void HandlePost(RequestContext request)
         {
             ResponseHandler.Status201(Writer);
             string message = ReadContent();
@@ -46,7 +46,7 @@ namespace MTCG_Project.Server
             //messageList.Add(request);
         }
 
-        void HandleGet(RequestContext request, string[] ressourceElements, List<RequestContext> messageList)
+        void HandleGet(RequestContext request)
         {
             string tmpString = GetHandler.HandleByCommand(request);
             Console.WriteLine(tmpString);
@@ -54,7 +54,7 @@ namespace MTCG_Project.Server
             ResponseHandler.Status200(Writer, tmpString);
         }
 
-        void HandlePut(RequestContext request, List<RequestContext> messageList)
+        void HandlePut(RequestContext request)
         {
             ResponseHandler.Status201(Writer);
             string message = ReadContent();
@@ -66,7 +66,7 @@ namespace MTCG_Project.Server
             //messageList.Insert(position - 1, request);
         }
 
-        void HandleDelete(RequestContext request, string[] ressourceElements, List<RequestContext> messageList)
+        void HandleDelete(RequestContext request)
         {
             string tmpString = DeleteHandler.HandleByCommand(request);
             ResponseHandler.Status200(Writer, tmpString);

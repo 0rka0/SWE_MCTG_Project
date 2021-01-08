@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using MTCG_Project.Server;
 using MTCG_Project.MTCG.NamespaceUser;
 using MTCG_Project.MTCG.Battle;
@@ -26,14 +25,14 @@ namespace MTCG_Project.Interaction
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message);
+                        Output.WriteConsole(e.Message);
                     }
                     return;
                 }
-                Console.WriteLine("Es muss zuerst ein Deck definiert werden!\n");
+                Output.WriteConsole(Output.RatedMatchDeckNotDefined);
                 return;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         public static void FriendBattleRequest(RequestContext request)
@@ -52,13 +51,13 @@ namespace MTCG_Project.Interaction
                         battle.StartFriendBattle();
                         return;
                     }
-                    Console.WriteLine("Es haben nicht beide User ein Deck definiert!\n");
+                    Output.WriteConsole(Output.FriendMatchDeckNotDefined);
                     return;
                 }
-                Console.WriteLine("Nicht befreundet!\n");
+                Output.WriteConsole(Output.FriendMatchNotInFl);
                 return;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static User FindOpponent(User user)
@@ -68,7 +67,7 @@ namespace MTCG_Project.Interaction
             User opp = SelectOpponent(goodOpponents);
             if (opp != null)
             {
-                Console.WriteLine("Ein Gegner mit ähnlicher Elo wurde gefunden!");
+                Output.WriteConsole(Output.RatedMatchGoodOpp);
                 return opp;
             }
 
@@ -77,11 +76,11 @@ namespace MTCG_Project.Interaction
             opp = SelectOpponent(allOpponents);
             if (opp != null)
             {
-                Console.WriteLine("Ein Gegner wurde gefunden!");
+                Output.WriteConsole(Output.RatedMatchBadOpp);
                 return opp;
             }
 
-            throw new Exception("Es existiert keine möglicher Gegner!");
+            throw new Exception(Output.RatedMatchNoOpp);
         }
 
         static User SelectOpponent(List<int> opponents)

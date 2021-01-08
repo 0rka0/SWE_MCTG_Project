@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using MTCG_Project.MTCG.Cards;
 using Npgsql;
 using MTCG_Project.MTCG.NamespaceUser;
@@ -36,17 +34,16 @@ namespace MTCG_Project.Interaction
                         cmd.Parameters.AddWithValue("@cn", cards[i].name);
                         cmd.Parameters.AddWithValue("@damage", cards[i].damage);
                         cmd.Parameters.AddWithValue("@pid", maxId+1);
+                        cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
                 }
                 catch (Exception e) 
                 {
-                    string exMsg = String.Format("Das gewünschte Package existiert bereits in der Datenbank!\n");
                     conn.Close();
-                    throw new Exception(exMsg);
+                    throw new Exception(Output.PackageAddedError);
                 }
             }
-
             conn.Close();
         }
 
@@ -68,9 +65,8 @@ namespace MTCG_Project.Interaction
             }
             catch (Exception e)
             {
-                string exMsg = String.Format("Es existieren keine Packages, die gekauft werden könnten!\n");
                 conn.Close();
-                throw new Exception(exMsg);
+                throw new Exception(Output.PackageTransactionError);
             }
 
             string selectString = String.Format("SELECT id, cardname, damage FROM cards_packs WHERE packid = {0}", minId);
@@ -87,9 +83,9 @@ namespace MTCG_Project.Interaction
             using (var cmd = new NpgsqlCommand("UPDATE cards_packs SET bought = true WHERE packid = @id", conn))
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@id", minId);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
-
             conn.Close();
 
             CardsUsersDatabaseHandler.InsertPackage(cards, user);

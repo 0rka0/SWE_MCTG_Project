@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Npgsql;
 using MTCG_Project.MTCG.NamespaceUser;
-using MTCG_Project.Server;
 
 namespace MTCG_Project.Interaction
 {
@@ -40,20 +38,15 @@ namespace MTCG_Project.Interaction
                     cmd.Parameters.AddWithValue("@elo", user.elo);
                     cmd.Parameters.AddWithValue("@w", user.wins);
                     cmd.Parameters.AddWithValue("@token", token);
+                    cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
             }
             catch(Exception e)      //potential errors with db solved by exception handling
             {
-                string exMsg = String.Format("User mit selbem Username existiert bereits!\n");
                 conn.Close();
-                throw new Exception(exMsg);
+                throw new Exception(Output.UserAlreadyInDB);
             }
-
-            /*using (var cmd = new NpgsqlCommand("Select uid, username FROM users", conn))
-            using (var reader = cmd.ExecuteReader())
-                while (reader.Read())
-                    Console.WriteLine("{0} {1}", reader[0], reader[1]);*/
 
             conn.Close();
         }
@@ -77,16 +70,14 @@ namespace MTCG_Project.Interaction
 
             if (username == null)
             {
-                string exMsg = String.Format("Username {0} does not exist!\n", user.username);
                 conn.Close();
-                throw new Exception(exMsg);
+                throw new Exception(Output.UserDoesNotExist);
             }
 
             if (!((String.Compare(username, user.username) == 0) && (String.Compare(password, user.password) == 0)))
             {
-                string exMsg = String.Format("Password does not fit Username\n");
                 conn.Close();
-                throw new Exception(exMsg);
+                throw new Exception(Output.UserPasswordError);
             }
 
             selectString = String.Format("SELECT count(*) FROM users WHERE current_timestamp < session AND username = '{0}'", user.username);
@@ -99,14 +90,14 @@ namespace MTCG_Project.Interaction
             
             if (String.Compare(sessionActive, "1") == 0)
             {
-                string exMsg = String.Format("User bereits eingeloggt!\n");
                 conn.Close();
-                throw new Exception(exMsg);
+                throw new Exception(Output.UserAlreadyLoggedIn);
             }
 
             using (var cmd = new NpgsqlCommand("UPDATE users SET session = current_timestamp + (60 || 'minutes')::interval WHERE username = @un", conn))
             {
                 cmd.Parameters.AddWithValue("@un", user.username);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
             conn.Close();
@@ -199,6 +190,7 @@ namespace MTCG_Project.Interaction
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@coins", user.coins);
                 cmd.Parameters.AddWithValue("@uid", user.uid);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
 
@@ -215,6 +207,7 @@ namespace MTCG_Project.Interaction
                 {      //adding parameters
                     cmd.Parameters.AddWithValue("@n", user.name);
                     cmd.Parameters.AddWithValue("@un", user.username);
+                    cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
             if (String.Compare(user.bio, null) != 0)
@@ -222,6 +215,7 @@ namespace MTCG_Project.Interaction
                 {      //adding parameters
                     cmd.Parameters.AddWithValue("@b", user.bio);
                     cmd.Parameters.AddWithValue("@un", user.username);
+                    cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
             if (String.Compare(user.image, null) != 0)
@@ -229,6 +223,7 @@ namespace MTCG_Project.Interaction
                 {      //adding parameters
                     cmd.Parameters.AddWithValue("@i", user.image);
                     cmd.Parameters.AddWithValue("@un", user.username);
+                    cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
 
@@ -246,6 +241,7 @@ namespace MTCG_Project.Interaction
                 cmd.Parameters.AddWithValue("@elo", user.elo);
                 cmd.Parameters.AddWithValue("@wins", user.wins);
                 cmd.Parameters.AddWithValue("@un", user.username);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
 

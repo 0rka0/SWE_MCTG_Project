@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using MTCG_Project.MTCG.Cards;
 using MTCG_Project.MTCG.NamespaceUser;
 using Npgsql;
@@ -15,7 +13,6 @@ namespace MTCG_Project.Interaction
         {
             using var conn = new NpgsqlConnection(connString);  //connect to db
             conn.Open();
-
             for (int i = 0; i < 5; i++)
             {
                 using (var cmd = new NpgsqlCommand("INSERT INTO cards_users VALUES (@id, @cn, @damage, @uid)", conn))        //inserting into db
@@ -24,10 +21,10 @@ namespace MTCG_Project.Interaction
                     cmd.Parameters.AddWithValue("@cn", cards[i].name);
                     cmd.Parameters.AddWithValue("@damage", cards[i].damage);
                     cmd.Parameters.AddWithValue("@uid", user.uid);
+                    cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
             }
-
             conn.Close();
         }
 
@@ -46,7 +43,6 @@ namespace MTCG_Project.Interaction
                     str += "Name: " + reader[1].ToString() + "\n";
                     str += " Damage: " + reader[2].ToString() + "\n";
                 }
-            //Console.WriteLine(str);
             conn.Close();
             return str;
         }
@@ -103,7 +99,7 @@ namespace MTCG_Project.Interaction
                 }
             conn.Close();
             if (deckEmpty)
-                return "Deck still empty!";
+                return Output.DeckEmpty;
             return str;
         }
 
@@ -126,10 +122,9 @@ namespace MTCG_Project.Interaction
 
             if (counter != 4)
             {
-                Console.WriteLine("Es wurden keine passenden vier Karten ausgewählt!\n");
+                Output.WriteConsole(Output.DeckUpdateError);
                 return;
             }
-
             conn.Close();
             UpdateCards(user, strings);
         }
@@ -141,6 +136,7 @@ namespace MTCG_Project.Interaction
             using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_deck = false WHERE userid = @uid", conn))
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@uid", user.uid);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
 
@@ -149,9 +145,8 @@ namespace MTCG_Project.Interaction
             {
                 updateString = String.Format("UPDATE cards_users SET in_deck = true WHERE userid = {0} AND id = '{1}'", user.uid, s);
                 using (var cmd = new NpgsqlCommand(updateString, conn))        //inserting into db
-                {      //adding parameters
-                    //cmd.Parameters.AddWithValue("@uid", user.uid);
-                    //cmd.Parameters.AddWithValue("@id", s);    //Problem with adding s as param --> solved by predefining string
+                {
+                    cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -159,11 +154,11 @@ namespace MTCG_Project.Interaction
             using (var cmd = new NpgsqlCommand("UPDATE users SET deck_set = true WHERE uid = @uid", conn))
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@uid", user.uid);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
             conn.Close();
-
-            Console.WriteLine("Deck wurde erfolgreich aktualisiert!\n");
+            Output.WriteConsole(Output.DeckUpdateSuccess);
         }
 
         static public DummyCard[] GetDummyDeck(User user)
@@ -185,7 +180,6 @@ namespace MTCG_Project.Interaction
                     deck[counter].damage = (float)((double)reader[2]);
                     counter++;
                 }
-
             conn.Close();
             return deck;
         }
@@ -235,7 +229,6 @@ namespace MTCG_Project.Interaction
             string cttId = "";
             using var conn = new NpgsqlConnection(connString);
             conn.Open();
-
             string selectString = String.Format("SELECT card_to_trade FROM tradings WHERE id = '{0}'", tradeId);
             using (var cmd = new NpgsqlCommand(selectString, conn))
             using (var reader = cmd.ExecuteReader())
@@ -245,9 +238,9 @@ namespace MTCG_Project.Interaction
             using (var cmd = new NpgsqlCommand("UPDATE cards_users SET in_shop = false WHERE id = @cid", conn))
             {      //adding parameters
                 cmd.Parameters.AddWithValue("@cid", cttId);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
-
             conn.Close();
         }
 
@@ -257,7 +250,8 @@ namespace MTCG_Project.Interaction
             conn.Open();
             string updateString = String.Format("UPDATE cards_users SET in_shop = true WHERE id = '{0}'", cttId);
             using (var cmd = new NpgsqlCommand(updateString, conn))
-            {      
+            {
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
             conn.Close();
@@ -270,15 +264,16 @@ namespace MTCG_Project.Interaction
             string updateString1 = String.Format("UPDATE cards_users SET userid = {0} WHERE id = '{1}'", offerUid, cttId);
             using (var cmd = new NpgsqlCommand(updateString1, conn))
             {
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
 
             string updateString2 = String.Format("UPDATE cards_users SET userid = {0} WHERE id = '{1}'", cttUid, offerCardId);
             using (var cmd = new NpgsqlCommand(updateString2, conn))
             {
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
-
             conn.Close();
         }
 
@@ -290,9 +285,9 @@ namespace MTCG_Project.Interaction
             string updateString = String.Format("UPDATE cards_users SET userid = 0 WHERE id = '{0}'", cardId);
             using (var cmd = new NpgsqlCommand(updateString, conn))
             {
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
-
             conn.Close();
 
             user.coins++;

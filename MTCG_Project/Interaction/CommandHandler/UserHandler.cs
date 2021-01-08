@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 using MTCG_Project.Server;
 using MTCG_Project.MTCG.NamespaceUser;
@@ -15,11 +13,11 @@ namespace MTCG_Project.Interaction
             try
             {
                 UserDatabaseHandler.InsertUser(tmpUser);
-                Console.WriteLine("User: {0}, wurde erfolgreich erstellt!\n", tmpUser.username);
+                Output.WriteConsole(Output.UserCreated);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Output.WriteConsole(e.Message);
             }
         }
 
@@ -29,11 +27,11 @@ namespace MTCG_Project.Interaction
             try
             {
                 UserDatabaseHandler.LoginUser(tmpUser);
-                Console.WriteLine("User {0} erfolgreich eingeloggt!\n", tmpUser.username);
+                Output.WriteConsole(Output.UserLoginSuccess);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Output.WriteConsole(e.Message);
             }
         }
 
@@ -48,9 +46,9 @@ namespace MTCG_Project.Interaction
                     return String.Format("ID: {0}\nUsername: {1}\nCoins: {2}\nName: {3}\nBio: {4}\nImage: {5}\n", 
                         user.uid, user.username, user.coins, user.name, user.bio, user.image);
                 }
-                return "Man kann nicht die persönlichen Daten von anderen Usern nicht sehen!";
+                return Output.UserdataAccessError;
             }
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public string ShowPersonalStats(RequestContext request)      //a user can view his personal stats
@@ -68,7 +66,7 @@ namespace MTCG_Project.Interaction
                 return String.Format("Username: {0}\nElo: {1}\nGames played: {2}\nWins: {3}\nWinrate: {4}%\n",
                     user.username, user.elo, user.gamesPlayed, user.wins, winrate.ToString("n2"));                
             }
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public string ShowScoreboard(RequestContext request)         //a scoreboard including stats of all users can be displayed
@@ -78,7 +76,7 @@ namespace MTCG_Project.Interaction
             {
                 return UserDatabaseHandler.GenerateScoreboard();
             }
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public void UpdateExtraUserData(RequestContext request)      //used to edit data like name, bio and image
@@ -91,13 +89,13 @@ namespace MTCG_Project.Interaction
                     User user = JsonConvert.DeserializeObject<User>(request.Message);
                     user.username = ExtractUserFromToken(GetToken(request));
                     UserDatabaseHandler.UpdateExtraUserData(user);
-                    Console.WriteLine("Profil des Users {0} wurden erfolgreich bearbeitet!", user.username);
+                    Output.WriteConsole(Output.UserdataEditSuccess);
                     return;
                 }
-                Console.WriteLine("Man kann nicht die Daten von anderen Usern verändern!\n");
+                Output.WriteConsole(Output.UserdataAccessError);
                 return;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static public int AuthUser(RequestContext request)

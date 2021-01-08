@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using MTCG_Project.Server;
 using MTCG_Project.MTCG.Trading;
 using MTCG_Project.MTCG.Cards;
@@ -18,8 +16,7 @@ namespace MTCG_Project.Interaction
             {
                 return TradingDatabaseHandler.GetTradingDeals();
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public void CreateDeal(RequestContext request)
@@ -34,18 +31,18 @@ namespace MTCG_Project.Interaction
                     try
                     {
                         TradingDatabaseHandler.CreateTradingDeal(user, item);
-                        Console.WriteLine("Trade Deal erfolgreich erstellt!\n");
+                        Output.WriteConsole(Output.TradeCreationSuccess);
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message);
+                        Output.WriteConsole(e.Message);
                     }
                     return;
                 }
-                Console.WriteLine("Die angegebene Karte kann nicht getauscht werden!\n");
+                Output.WriteConsole(Output.TradeCreationInvalidCard);
                 return;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static public string DeleteDeal(RequestContext request)
@@ -57,12 +54,11 @@ namespace MTCG_Project.Interaction
                 if (TradingDatabaseHandler.CheckDealToUser(id, UserHandler.GetUserDataByToken(request)))
                 {
                     TradingDatabaseHandler.DeleteTradingDeal(id);
-                    return "Deal erfolgreich gelöscht!";
+                    return Output.TradeDeletionSuccess;
                 }
-                return "Es kann kein Deal mit der angegebenen Karte gelöscht werden";
+                return Output.TradeDeletionError;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
-            return "Nicht eingeloggt!";
+            return Output.AuthError;
         }
 
         static public void Trade(RequestContext request)
@@ -82,19 +78,19 @@ namespace MTCG_Project.Interaction
                         if (TradingDatabaseHandler.Trade(tradeId, user, offeredCardId, card.type, card.damage))
                         {
                             TradingDatabaseHandler.DeleteTradingDeal(tradeId);
-                            Console.WriteLine("Tausch erfolgreich!\n");
+                            Output.WriteConsole(Output.TradeSuccess);
                             return;
                         }
-                        Console.WriteLine("Tausch leider nicht erfolgreich, Anforderungen nicht erfüllt!\n");
+                        Output.WriteConsole(Output.TradeConditionsNotMet);
                         return;
                     }
-                    Console.WriteLine("Karte kann existiert nicht oder kann nicht getauscht werden!\n");
+                    Output.WriteConsole(Output.TradeInvalidCard);
                     return;
                 }
-                Console.WriteLine("Man kann nicht mit sich selbst handeln!\n");
+                Output.WriteConsole(Output.TradeSelfTrade);
                 return;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static public void SellCard(RequestContext request)
@@ -107,13 +103,13 @@ namespace MTCG_Project.Interaction
                 if(UserCardsHandler.CheckValidCardToUser(cardId, user))
                 {
                     UserCardsHandler.SellCard(cardId, user);
-                    Console.WriteLine("Karte erfolgreich für eine Muenze verkauft!");
+                    Output.WriteConsole(Output.CardSoldSuccess);
                     return;
                 }
-                Console.WriteLine("Die ausgewählte Karte ist nicht im Besitz oder kann nicht gewählt werden!\n");
+                Output.WriteConsole(Output.CardSoldError);
                 return;
             }
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static string ExtractIdFromRessource(string ress)

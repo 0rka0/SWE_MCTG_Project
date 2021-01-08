@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 using MTCG_Project.Server;
 using MTCG_Project.MTCG.NamespaceUser;
@@ -27,11 +25,11 @@ namespace MTCG_Project.Interaction
                 try
                 {
                     CardsPacksDatabaseHandler.InsertPackage(cards);
-                    Console.WriteLine("Package wurde erfolgreich hinzugefügt!\n");
+                    Output.WriteConsole(Output.PackageAddedSuccess);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Output.WriteConsole(e.Message);
                 }
 
                 return;
@@ -39,11 +37,10 @@ namespace MTCG_Project.Interaction
 
             if (userstate == 1)
             {
-                Console.WriteLine("Adminrechte benötigt!\n");
+                Output.WriteConsole(Output.PermissionsDenied);
                 return;
             }
-
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static public void AcquirePackage(RequestContext request)
@@ -54,7 +51,7 @@ namespace MTCG_Project.Interaction
                 User user = UserHandler.GetUserDataByToken(request);
                 if (user.coins < 5)
                 {
-                    Console.WriteLine("Nicht genug Muenzen im Besitz!\n");
+                    Output.WriteConsole(Output.InsufficientCoins);
                     return;
                 }
 
@@ -63,17 +60,16 @@ namespace MTCG_Project.Interaction
                     CardsPacksDatabaseHandler.AcquirePackage(user);
                     user.coins -= 5;
                     UserHandler.UpdateCoins(user);
-                    Console.WriteLine("Package wurde erfolgreich gekauft!\n");
+                    Output.WriteConsole(Output.PackageTransactionSuccess);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Output.WriteConsole(e.Message);
                 }
 
                 return;
             }
-
-            Console.WriteLine("Authentifizierung fehlgeschlagen/Nicht eingeloggt!\n");
+            Output.WriteConsole(Output.AuthError);
         }
 
         static string[] PrepareJsonStrings(string inputString)

@@ -10,7 +10,6 @@ namespace MTCG_Project
 {
     class Program
     {
-        static List<RequestContext> MessageList = new List<RequestContext>();
         public static async Task Main()
         {
             RequestContext request;
@@ -30,7 +29,7 @@ namespace MTCG_Project
                     request = requestPreparer.ReadRequest(reader);
 
                     using StreamWriter writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
-                    requestPreparer.PrepareRequest(writer, request, MessageList);
+                    requestPreparer.PrepareRequest(writer, request);
                 }
                 catch (Exception exc)
                 {
