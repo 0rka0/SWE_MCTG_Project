@@ -96,18 +96,4 @@ namespace MCTG_Project.Test
             Assert.AreEqual(desiredGoblinDamage, actualGoblinDamage);
         }
     }
-
-    public class StackTests
-    {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-        [Test]
-        public void AddCards()
-        {
-
-        }
-    }
 }

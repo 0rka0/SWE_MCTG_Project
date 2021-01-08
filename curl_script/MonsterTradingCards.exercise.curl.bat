@@ -268,6 +268,49 @@ curl -X GET http://localhost:10001/tradings --header "Authorization: Basic kienb
 echo.
 curl -X GET http://localhost:10001/tradings --header "Authorization: Basic altenhof-mtcgToken"
 echo.
+echo.
+
+REM --------------------------------------------------
+echo 22) sell card for coins
+echo try to trade card in deck (should fail)
+curl -X POST http://localhost:10001/tradings/coins --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d "\"171f6076-4eb5-4a7d-b3f2-2d650cc3d237\""
+echo sell card
+curl -X POST http://localhost:10001/tradings/coins --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d "\"4ec8b269-0dfa-4f97-809a-2c63fe2a0025\""
+echo.
+echo.
+
+REM --------------------------------------------------
+echo 23) interact with friends
+echo show friendlist
+curl -X GET http://localhost:10001/friends --header "Authorization: Basic kienboec-mtcgToken"
+echo add friend (only request not accepted yet)
+curl -X POST http://localhost:10001/friends/altenhof --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d ""
+echo add friend back (works as accept)
+curl -X POST http://localhost:10001/friends/kienboec --header "Content-Type: application/json" --header "Authorization: Basic altenhof-mtcgToken" -d ""
+echo cannot add yourself (should fail)
+curl -X POST http://localhost:10001/friends/kienboec --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken" -d ""
+echo show friendlist after adding
+curl -X GET http://localhost:10001/friends --header "Authorization: Basic kienboec-mtcgToken"
+curl -X GET http://localhost:10001/friends --header "Authorization: Basic altenhof-mtcgToken"
+echo remove friend 
+curl -X DELETE http://localhost:10001/friends/altenhof --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken"
+echo remove yourself from friendlist (should fail)
+curl -X DELETE http://localhost:10001/friends/kienboec --header "Content-Type: application/json" --header "Authorization: Basic kienboec-mtcgToken"
+echo.
+echo.
+
+REM --------------------------------------------------
+echo 24) Friend Matches
+echo Battling a friend
+start /b "kienboec battle" curl -X POST http://localhost:10001/battles/altenhof --header "Authorization: Basic kienboec-mtcgToken"
+echo Trying to battle someone who is not a friend (should fail)
+start /b "kienboec battle" curl -X POST http://localhost:10001/battles/admin --header "Authorization: Basic kienboec-mtcgToken"
+echo.
+curl -X GET http://localhost:10001/stats --header "Authorization: Basic kienboec-mtcgToken"
+echo.
+curl -X GET http://localhost:10001/stats --header "Authorization: Basic altenhof-mtcgToken"
+echo.
+echo.
 
 REM --------------------------------------------------
 echo end...
