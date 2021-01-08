@@ -1,15 +1,12 @@
 using NUnit.Framework;
-using System.IO;
-using System;
 using MTCG_Project.MTCG.Cards;
 using MTCG_Project.MTCG.Cards.Monsters;
 using MTCG_Project.MTCG.Cards.Spells;
-using MTCG_Project.MTCG.NamespaceUser;
 
 
 namespace MCTG_Project.Test
 {
-    public class CardTests
+    public class CreateCardsTests
     {
         [SetUp]
         public void Setup()
@@ -78,22 +75,6 @@ namespace MCTG_Project.Test
             Assert.AreEqual(desiredName1, card1.name);
             Assert.AreEqual(desiredName2, card2.name);
             Assert.AreEqual(desiredName3, card3.name);
-        }
-
-        [Test]
-        public void Dragon_Goblin()
-        {
-            ICard Dragon = new Dragon(100);
-            ICard Goblin = new WaterGoblin(40);
-
-            float desiredDragonDamage = 100;
-            float desiredGoblinDamage = 0;
-
-            float actualDragonDamage = Dragon.CombatBehavior(Goblin);
-            float actualGoblinDamage = Goblin.CombatBehavior(Dragon);
-
-            Assert.AreEqual(desiredDragonDamage, actualDragonDamage);
-            Assert.AreEqual(desiredGoblinDamage, actualGoblinDamage);
         }
     }
 }

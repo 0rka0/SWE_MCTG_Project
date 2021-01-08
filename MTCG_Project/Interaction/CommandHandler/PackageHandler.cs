@@ -72,7 +72,7 @@ namespace MTCG_Project.Interaction
             Output.WriteConsole(Output.AuthError);
         }
 
-        static string[] PrepareJsonStrings(string inputString)
+        static public string[] PrepareJsonStrings(string inputString)
         {
             int counter = 0;
             string[] finishedStrings = new string[5];
