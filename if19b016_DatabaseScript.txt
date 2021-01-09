@@ -1,0 +1,51 @@
+create table users (
+uid integer primary key,
+username varchar(20) unique not null,
+pw varchar(20) not null,
+coins integer not null,
+games_played integer not null, 
+elo integer not null,
+wins integer not null,
+token varchar(40) not null,
+session timestamp,
+name varchar(20) default null,
+bio varchar(100) default null,
+image varchar(100) default null,
+deck_set boolean default false
+)
+
+create table cards_packs (
+id varchar(40) primary key,
+cardname varchar(50) not null,
+damage float not null,
+packid integer,
+bought boolean default false
+)
+
+create table cards_users (
+id varchar(40) primary key,
+cardname varchar(50) not null,
+damage float not null,
+userid integer,
+in_deck boolean default false,
+in_shop boolean default false
+)
+
+create table tradings (
+id varchar(40) primary key,
+card_to_trade varchar(40) unique not null,
+card_type varchar(10) not null,
+minimum_damage float not null
+)
+
+create table friends (
+uid1 integer not null,
+uid2 integer not null,
+accepted boolean default false
+)
+
+delete from users; 
+delete from cards_users; 
+delete from cards_packs;
+delete from tradings;
+delete from friends;

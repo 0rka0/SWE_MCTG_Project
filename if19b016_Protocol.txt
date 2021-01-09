@@ -1,0 +1,82 @@
+if19b016
+MTCG-Project-Protokoll
+
+Technische Schritte
+
+Das fertiggestellte Projekt besteht grundsätzlich aus 4 Grundkomponenten
+- Der Server, welcher Requests empfängt, diese aufschlüsselt und wieder antwortet.
+- Einer "Interaktionskomponente", welche die ausführt und für den entsprechenden Ablauf zuständig ist.
+  Hier befinden sich auch die Klassen, welche für die Datenbankzugriffe zuständig sind.
+- Der Datenbank, welche die Informationen längerfristig abspeichert.
+- Dem Spiel selbst, welches sich um die tatsächlich spielrelevanten Aspekte kümmert. 
+
+Server
+Design:
+- Der Server empfängt die von dem Client ausgehenden Requests.
+- Er zerlegt diese in ihre einzelnen Komponenten und überprüft auf Korrektheit.
+- Entsprechend des HTTP-Verbs werden diese zugeteilt und unterschiedlich behandelt.
+- Nachdem ein Request fertig bearbeitet wurde, wird hier dann die entsprechende Response an den Client zurückgeschickt.
+Probleme und Lösungen:
+- Ein Problem welches bis zu Ende bestand war mangelndes Verständnis des Mockings, wodurch ich keine Unit-Tests geschrieben habe, welche die Serverfunktionalität prüfen.
+- Zu Beginn hatte ich Probleme, mich hier hereinzufinden, aber mit etwas Unterstützung konnte dieses Problem durch schrittweises Abarbeiten des HTTP-Protokolls gelöst werden.
+
+Interaktion
+Design:
+- Entsprechend des empfangenen HTTP-Verbs und der Ressource werden hier die Inhalte des Requests an die entsprechenden Methoden weitergegeben. 
+- Hier finden sämtliche logische Abläufe statt, welche durch die Requests angefordert werden.
+- Falls notwendig werden in entsprechenden Klassen auch Datenbankzugriffe getätigt und mit den erhaltenen Informationen weitergearbeitet.
+- Nachdem ein Request fertig bearbeitet wurde fällt der Ablauf (mit den entsprechenden Informationen) zu dem Server zurück.
+Probleme und Lösungen:
+- Ich hatte zunächst das Problem, dass ich nicht in der Lage war mich mit meiner Datenbank zu verbinden, wodurch leider relativ viel Zeit verloren gegangen ist.
+  Im Endeffekt war es mir dann nach einiger Recherche möglich mit dem Tool pgAdmin auf die Datenbank zuzugreifen und mit der Arbeit zu beginnen.
+- Auch hier, hatte ich kleine Startschwierigkeiten, was das Zusammenspiel zwischen C#-Code und der Datenbank anging, dieses hat sich jedoch durch ausreichend Probieren, quasi selbst gelöst.
+
+Datenbank
+Design:
+- Hier werden sämtliche Informationen abgespeichert, welche längerfristig benötigt werden.
+- Sie besteht aus 5 Tables:
+  - Users (uid, username, password, coins, games_played, elo, wins, token, session, name, bio, image, deck_set): speichert sämtliche Informationen über die einzelnen Nutzer
+  - cards_packs (id, cardname, damage, packid, bought): speichert für sämtliche erstellten Karten: deren Karteninformationen, zu welchem Pack sie gehören und ob sie bereits gekauft sind
+  - cards_users (id, cardname, damage, user_id, in_deck, in_shop): 
+    speichert für sämtliche Karten, welche bereits von Usern erworben wurden: deren Karteninformationen, wem sie gehören, ob sie aktuell zum Kampf ausgewählt sind und ob sie aktuell zum Tausch ausstehen
+  - tradings (id, card_to_trade, card_type, minimum_damage, uid): 
+    speichert für jedes aktive Tauschangebot: welche Karte angeboten wird, welche Anforderungen die zu tauschende Karte erfüllen muss und von wem der Tausch angeboten wird
+  - (optional) friends (uid1, uid2, accepted): speichert zwei User und einen "accepted" state:
+    Wenn nur eine Anfrage abgeschickt wurde, wird ein Eintrag erstellt und "accepted" bleibt false, wird diese Anfrage akzeptiert so wechselt dieser Wert auf true und zwei User werden Freunde
+
+MTCG
+Design:
+- Hier befinden sich alle Komponenten, welche für das Spiel gebraucht werden und Daten aus der Daten für den aktuellen Gebrauch, temporär abspeichern. 
+  Diese bestehen aus:
+  Usern, Karten (jede Karte für sich, Monster- und Zauberkarten), Kampfdecks, Kämpfe, Zwischenspeicher für Datenbankzugriffe
+  - User werden erstellt/bearbeitet und die Informationen in die Datenbank geschrieben werden.
+    Userinformationen können auch wieder ausgelesen werden, für beispielsweise die Userauthentifikation oder für die Kämpfe zwischen den Usern.
+  - Karten werden, mit sämtlichen Eigenschaften, aus den in der Datenbank gespeicherten Informationen erstellt und in Form von Kampfdecks gruppiert im Kampf verwendet.
+  - Kampfdecks werden aus der Datenbank für die entsprechenden User ausgelesen und können verändert werden ohne die Datenbank zu beeinflussen. 
+  - Wird ein Kampf gestartet so erhält dieser Userinformationen und deren passende Kampfdecks um damit die Kampflogik auszuführen und im Anschluss die veränderten Daten weiterzugeben.
+  - Zwischenspeicher (Dummy Karten, Trading Items): Vereinfachte Varianten, welche ausschließlich die datenbankrelevanten Informationen enthalten um damit die Zugriffe durchzuführen.
+Probleme und Lösungen:
+- Hier sind keine weiteren bemerkenswerte Probleme aufgetreten.
+- Der einzige Schritt welcher zur technischen Verbesserung getätigt wurde, war das Erstellen der oben beschriebenen Zwischenspeicher-Klassen, um auch mit mangelnden Informationen für Datenbankzugriffe taugliche Objekte zu erstellen.
+
+
+Unit Tests
+
+Wie bereits oben beschrieben mangelt es in meinem Projekt an Unit-Tests, welche sich mit der Serverfunktion auseinandersetzen. 
+Außerdem, werden sämtliche Datenbankzugriffe nicht mittels Unit-Tests überprüft, sondern diese habe ich manuell in Form von Integration-Tests überprüft.
+
+Die von mir getesteten Bereiche sind hauptsächlich die Karten und deren Interaktionen im Kampf, 
+da man hier die Funktion und auch das Zusammenspiel der einzelnen Karten gut sehen und prüfen kann, ohne einen vollständigen Kampf durchzuarbeiten.
+
+
+Zeitaufwand
+
+Abgabe1 HTTP-REST Server: ~ 15h
+Abgabe2 MTCG-Projekt: ~ 45h
+
+
+Git-Ablauf
+
+- Während der ganzen Enwicklung hatte ich einen "Dev"-Branch mitlaufen, welcher auf dem neuesten Stand gehalten wurde.
+- Für jedes einzelne Feature habe ich einen eigenen Branch erstellt, auf dem ich bis zur Vervollständigung dieses Bereichs gearbeitet habe, um diesen dann im Anschluss auf den "Dev"-Branch zu mergen.
+- Jedes mal, ab dem Moment wo die Anforderungen des Projektes fertig erfüllt waren, habe ich eine "abgabebereite" Version auf den Master gemerged und einen eigenen Branch für die aktuelle Version erstellt. 
