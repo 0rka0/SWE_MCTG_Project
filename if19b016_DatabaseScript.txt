@@ -12,7 +12,7 @@ name varchar(20) default null,
 bio varchar(100) default null,
 image varchar(100) default null,
 deck_set boolean default false
-)
+);
 
 create table cards_packs (
 id varchar(40) primary key,
@@ -20,7 +20,7 @@ cardname varchar(50) not null,
 damage float not null,
 packid integer,
 bought boolean default false
-)
+);
 
 create table cards_users (
 id varchar(40) primary key,
@@ -29,20 +29,21 @@ damage float not null,
 userid integer,
 in_deck boolean default false,
 in_shop boolean default false
-)
+);
 
 create table tradings (
 id varchar(40) primary key,
 card_to_trade varchar(40) unique not null,
 card_type varchar(10) not null,
-minimum_damage float not null
-)
+minimum_damage float not null,
+uid integer not null
+);
 
 create table friends (
 uid1 integer not null,
 uid2 integer not null,
 accepted boolean default false
-)
+);
 
 delete from users; 
 delete from cards_users; 
